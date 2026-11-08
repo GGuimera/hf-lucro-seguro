@@ -64,8 +64,8 @@ def ceasas_por_dia(produto):
     """Quantas Ceasas entram, em média, na média do Brasil de um produto (por dia)."""
     with sqlite3.connect(BANCO) as con:
         b = media_brasil(con)
+        total = pd.read_sql("SELECT COUNT(DISTINCT ceasa) FROM precos WHERE produto = ?", con, params=(produto,)).iloc[0, 0]
     b = b[b["produto"] == produto]
-    total = pd.read_sql("SELECT COUNT(DISTINCT ceasa) FROM precos WHERE produto = ?", sqlite3.connect(BANCO), params=(produto,)).iloc[0, 0]
     return (b["n_ceasas"].mean() if len(b) else 0), int(total)
 
 
@@ -134,7 +134,9 @@ unidade = UNIDADES.get(dados["unidade"].iloc[0], dados["unidade"].iloc[0].lower(
 # ---------- Cartões de resumo ----------
 ultimo = dados.iloc[-1]
 ha_30 = dados[dados["data"] <= ultimo["data"] - pd.Timedelta(days=30)]
-ano_ult = int(ultimo["ano"]) if ultimo["mes"] > 1 or len(dados[dados["ano"] == ultimo["ano"]]) > 5 else int(ultimo["ano"]) - 1
+meses_por_ano = dados.groupby("ano")["mes"].nunique()
+anos_cheios = meses_por_ano[meses_por_ano >= 10]
+ano_ult = int(anos_cheios.index.max()) if len(anos_cheios) else int(ultimo["ano"])  # último ano com 10+ meses
 do_ano = dados[dados["ano"] == ano_ult]
 
 k1, k2, k3, k4 = st.columns(4)
@@ -170,7 +172,13 @@ fonte_anos = "Conab / Prohort (preço mais comum do dia, média do mês)"
 if ceasa == "CEASAMINAS - BELO HORIZONTE":
     with sqlite3.connect(BANCO) as con:
         tem_pl = con.execute("SELECT name FROM sqlite_master WHERE name='planilha_bh'").fetchone()
-        pl = pd.read_sql("SELECT mes, preco FROM planilha_bh WHERE produto = ?", con, params=(produto,)) if tem_pl else pd.DataFrame()
+        cols = [r[1] for r in con.execute("PRAGMA table_info(planilha_bh)")] if tem_pl else []
+        if tem_pl and "ceasa" in cols:
+            pl = pd.read_sql("SELECT mes, preco FROM planilha_bh WHERE produto = ? AND ceasa = ?", con, params=(produto, ceasa))
+        elif tem_pl:
+            pl = pd.read_sql("SELECT mes, preco FROM planilha_bh WHERE produto = ?", con, params=(produto,))
+        else:
+            pl = pd.DataFrame()
     if len(pl):
         pl["ano"], pl["mes"] = pl["mes"].str[:4].astype(int), pl["mes"].str[5:].astype(int)
         mensal = pl[["ano", "mes", "preco"]]

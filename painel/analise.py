@@ -193,7 +193,7 @@ if tem_custo and tab["lucro"].max() < 0:
     st.error(
         f"⚠️ Com os valores atuais, **todos os meses de plantio dão prejuízo** no cenário esperado. O \"melhor mês\" é só o de "
         f"**menor prejuízo**. Para empatar, o preço na Ceasa precisaria chegar a "
-        f"{brl(M.preco_empate(desconto, prod_t, perda_tip, custo_ha))}/{unidade}."
+        f"{brl(M.preco_empate(desconto, melhor['prod_ef'], perda_tip, custo_ha))}/{unidade}."
     )
 
 # ---------- 2. Os 12 meses de plantio ----------
@@ -409,7 +409,8 @@ else:
     n_d, k_b = len(dif), int((dif > 0).sum())
     lo, hi = M.intervalo_bootstrap(dif.values)
     sem_ext = dif.drop(index=dif.abs().idxmax()).mean()
-    p_acaso = M.chance_acaso(max(k_b, n_d - k_b), n_d)
+    # teste dos dois lados: chance de QUALQUER uma das estratégias ganhar tantos anos por acaso
+    p_acaso = min(1.0, 2 * M.chance_acaso(max(k_b, n_d - k_b), n_d))
     if n_d < 5:
         veredito, cor_v = "Inconclusivo: poucos anos de histórico", "#e0b341"
     elif lo > 0:

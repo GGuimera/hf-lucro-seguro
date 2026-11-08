@@ -124,8 +124,10 @@ def serie_local(mensal, produto, ceasa):
 
 
 @st.cache_data(show_spinner=False)
-def modelo_produto(mensal, pl, produto):
-    """Monta a base, o índice sazonal, os cenários (Q = preço ÷ tendência) e a confiança de um produto."""
+def modelo_produto(_mensal, _pl, produto):
+    """Monta a base, o índice sazonal, os cenários (Q = preço ÷ tendência) e a confiança de um produto.
+    (O _ na frente faz o Streamlit guardar o resultado só pelo produto, sem reler as tabelas inteiras a cada vez.)"""
+    mensal, pl = _mensal, _pl
     series, fonte = {}, ""
     if len(pl) and produto in set(pl["produto"]):
         p = pl[pl["produto"] == produto].copy()
@@ -312,7 +314,9 @@ def preco_normal(mensal, mod, produto, ceasa, data_venda, metodo, inflacao):
         v, txt = res[metodo]
     else:
         v, txt = res[METODOS[0]]
-        txt += " (o método escolhido precisa de pelo menos 6 anos de série; usei o recomendado)"
+        motivo = ("precisa de pelo menos 6 anos de série" if metodo == METODOS[1]
+                  else "precisa de um ano com pelo menos 10 meses de preço nesta Ceasa")
+        txt += f" (o método escolhido {motivo}; usei o recomendado)"
     return v, txt, {k: v_ for k, (v_, _) in res.items()}
 
 

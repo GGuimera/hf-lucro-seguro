@@ -51,13 +51,17 @@ def visual(fig, titulo_y, altura=340, sufixo=""):
 @st.cache_data(show_spinner="Testando o modelo nos anos passados…")
 def prova_passado(_mod, produto, n_top=3, min_treino=3):
     """Para cada ano Y: escolhe os n_top meses mais caros usando SÓ os anos antes de Y; mede o ganho real em Y."""
-    s = list(_mod["series"].values())
     linhas = []
     razoes = []
-    for serie in s:
+    for nome_s, serie in _mod["series"].items():
         r = serie / M._media_movel_12(serie)
-        razoes.append(pd.DataFrame({"ano": [p.year for p in r.index], "mes": [p.month for p in r.index], "r": r.values,
-                                    "preco": serie.values}).dropna(subset=["preco"]))
+        d = pd.DataFrame({"serie": nome_s, "ano": [p.year for p in r.index], "mes": [p.month for p in r.index],
+                          "r": r.values, "preco": serie.values}).dropna(subset=["preco"])
+        # preço de cada mês ÷ média DA MESMA série naquele ano (só anos completos): assim a troca de Ceasas
+        # que informam no meio do ano não vira "época" falsa
+        cheio = d.groupby("ano")["mes"].transform("nunique") == 12
+        d["rel"] = np.where(cheio, d["preco"] / d.groupby("ano")["preco"].transform("mean"), np.nan)
+        razoes.append(d)
     tudo = pd.concat(razoes)
     anos = sorted(tudo["ano"].unique())
     for ano in anos:
@@ -68,7 +72,7 @@ def prova_passado(_mod, produto, n_top=3, min_treino=3):
         if len(idx) < 12:
             continue
         top = list(idx.sort_values(ascending=False).head(n_top).index)
-        real = tudo[tudo["ano"] == ano].groupby("mes")["preco"].median()
+        real = tudo[tudo["ano"] == ano].dropna(subset=["rel"]).groupby("mes")["rel"].median()
         if len(real) < 12:
             continue
         ganho = real[top].mean() / real.mean() - 1
@@ -154,6 +158,9 @@ else:
     bh = bh.groupby("m")["preco"].mean()
     comum = al.index.intersection(bh.index)
     dif = 1 - al[comum] / bh[comum]
+if not pp.empty and len(comum) == 0:
+    st.info("Não há meses em comum entre o preço ao produtor do alho em MG e a CeasaMinas BH para comparar.")
+elif not pp.empty:
     st.markdown(
         '<p class="dica">Comparação oficial da Conab para o <b>alho em Minas Gerais</b>: preço que o <b>produtor recebeu</b> '
         "× preço na <b>CeasaMinas BH</b>, mês a mês. É o caso em que as duas fontes são comparáveis (mesmo produto e região).</p>",
