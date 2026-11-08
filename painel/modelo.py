@@ -48,6 +48,36 @@ MIN_CEASAS_BRASIL = 5
 MIN_MESES_SERIE = 36      # mínimo de meses para uma Ceasa entrar no índice combinado
 METODOS = ["Preço normal dos últimos 24 meses (recomendado)", "Tendência de longo prazo", "Último ano completo"]
 
+# Boletins da Ceagesp (São Paulo): um TIPO representativo de cada produto, sempre em R$/kg.
+# Na Ceagesp o "1A" é o tipo mais barato e "3A"/"Especial" os mais caros; usamos o tipo do meio.
+CEAGESP_BOL = "CEAGESP - SAO PAULO (BOLETINS)"
+MAPA_CEAGESP = {
+    "ABOBORA": ("ABÓBORA JAPONESA", "-"), "ABOBRINHA": ("ABOBRINHA ITALIANA", "2A"),
+    "ALHO": ("ALHO NACIONAL", "TIPO 6"), "BATATA": ("BATATA LAVADA", "ESPECIAL"),
+    "BATATA DOCE": ("BATATA-DOCE ROSADA", "1A"), "BERINJELA": ("BERINJELA COMUM", "2A"),
+    "BETERRABA": ("BETERRABA", "2A"), "CARA": ("CARÁ", "2A"), "CEBOLA": ("CEBOLA NACIONAL", "CAIXA 3"),
+    "CENOURA": ("CENOURA", "2A"), "CHUCHU": ("CHUCHU", "2A"), "INHAME": ("INHAME", "2A"),
+    "JILO": ("JILÓ", "2A"), "MANDIOCA": ("MANDIOCA", "MÉDIA"), "MANDIOQUINHA": ("MANDIOQUINHA", "2A"),
+    "MELANCIA": ("MELANCIA", "MÉDIA ( DE 7 A 10 KG)"), "MELAO AMARELO": ("MELÃO AMARELO", "08 A 09 FRUTOS"),
+    "MILHO VERDE": ("MILHO VERDE", "A"), "MORANGO": ("MORANGO COMUM", "4 CUMB/2 CAM"),
+    "PEPINO": ("PEPINO COMUM", "2A"), "PIMENTAO VERDE": ("PIMENTÃO VERDE", "2A"), "QUIABO": ("QUIABO", "2A"),
+    "TOMATE": ("TOMATE CARMEM", "2A"), "VAGEM": ("VAGEM MACARRÃO", "2A"),
+}
+
+
+def ceagesp_diario(con):
+    """Preço 'mais comum' dos boletins da Ceagesp no tipo representativo de cada produto."""
+    if not con.execute("SELECT name FROM sqlite_master WHERE name='ceagesp'").fetchone():
+        return pd.DataFrame()
+    cg = pd.read_sql("SELECT data, produto, classificacao, unidade, preco_comum FROM ceagesp", con)
+    partes = []
+    for prod, (nome, tipo) in MAPA_CEAGESP.items():
+        g = cg[(cg["produto"] == nome) & (cg["classificacao"] == tipo) & (cg["unidade"] == "KG")]
+        if len(g):
+            partes.append(pd.DataFrame({"uf": "SP", "ceasa": CEAGESP_BOL, "produto": prod, "unidade": "KG",
+                                        "data": g["data"].values, "preco": g["preco_comum"].values}))
+    return pd.concat(partes, ignore_index=True) if partes else pd.DataFrame()
+
 
 # ----------------------------------------------------------------- carregamento
 def media_brasil(con):
@@ -67,6 +97,9 @@ def carregar():
     with sqlite3.connect(BANCO) as con:
         todas = pd.read_sql("SELECT uf, ceasa, produto, unidade, data, preco FROM precos", con)
         br = media_brasil(con).drop(columns="n_ceasas")
+        bol = ceagesp_diario(con)
+        if len(bol):
+            br = pd.concat([br, bol], ignore_index=True)
         tem = con.execute("SELECT name FROM sqlite_master WHERE name='planilha_bh'").fetchone()
         pl = pd.read_sql("SELECT * FROM planilha_bh", con) if tem else pd.DataFrame()
     if len(pl) and "ceasa" not in pl.columns:
@@ -292,7 +325,7 @@ def preco_normal(mensal, mod, produto, ceasa, data_venda, metodo, inflacao):
     centro = ult.index[len(ult) // 2]
     res[METODOS[0]] = (float(des.mean()) * corr(centro),
                        f"média sem época de {ult.index[0].strftime('%m/%Y')} a {ult.index[-1].strftime('%m/%Y')}, "
-                       f"corrigida por {inflacao:.1%} ao ano até {data_venda:%m/%Y}")
+                       f"corrigida por {num(inflacao * 100)}% ao ano até {data_venda:%m/%Y}")
     anos_ok = s.groupby([p.year for p in s.index]).size()
     anos_ok = anos_ok[anos_ok >= 10]
     if len(anos_ok):
