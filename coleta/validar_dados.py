@@ -63,7 +63,7 @@ def main():
         print(f"  {ce}: {len(tem)} produtos | com mais de 3 meses faltando: {len(ruins)} "
               f"{dict(sorted(ruins.items(), key=lambda x: -x[1])[:6]) if ruins else ''}")
 
-    titulo("5. Ceagesp 2026 (menor <= comum <= maior)")
+    titulo("5. Boletins da Ceagesp (menor <= comum <= maior)")
     cg = pd.read_sql("SELECT * FROM ceagesp", con)
     erro = cg[(cg["preco_min"] > cg["preco_comum"]) | (cg["preco_comum"] > cg["preco_max"])]
     print(f"{len(cg):,} preços | fora da ordem: {len(erro)} | sem preço: {cg['preco_comum'].isna().sum()}")

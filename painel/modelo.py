@@ -191,7 +191,8 @@ def modelo_produto(_mensal, _pl, produto):
                 s = _continua(g.set_index("periodo")["preco"])
                 if s.notna().sum() >= MIN_MESES_SERIE:
                     series[ce] = s
-        fonte = f"Índice combinado de {len(series)} Ceasas (Conab, {_anos_txt(series)})"
+        org = "Conab + boletins Ceagesp" if CEAGESP_BOL in series else "Conab"
+        fonte = f"Índice combinado de {len(series)} Ceasas ({org}, {_anos_txt(series)})"
     if not series:
         return None
 
