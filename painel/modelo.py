@@ -353,6 +353,55 @@ def preco_normal(mensal, mod, produto, ceasa, data_venda, metodo, inflacao):
     return v, txt, {k: v_ for k, (v_, _) in res.items()}
 
 
+# ----------------------------------------------------------------- eventos (notícias)
+EVENTOS = PASTA / "dados" / "eventos.csv"
+
+
+def carregar_eventos():
+    if not EVENTOS.exists():
+        return pd.DataFrame()
+    ev = pd.read_csv(EVENTOS, sep=";", dtype=str)
+    ev["produtos"] = ev["produtos"].str.split("|")
+    return ev
+
+
+def _desvios(adj, antes, depois):
+    """Para cada mês t: maior variação nos 'depois' meses a partir de t, vs média dos 'antes' meses anteriores."""
+    out = {}
+    idx = adj.index
+    for t in idx:
+        ant = adj[(idx >= t - antes) & (idx < t)].dropna()
+        dep = adj[(idx >= t) & (idx < t + depois)].dropna()
+        if len(ant) >= 2 and len(dep) >= 1:
+            d = dep / ant.mean() - 1
+            out[t] = float(d.iloc[int(np.argmax(np.abs(d.values)))])
+    return pd.Series(out, dtype=float)
+
+
+def efeito_evento(mensal, mod, produto, ceasa, mes, antes=3, depois=2):
+    """Variação do preço depois do evento, já sem o efeito da época, e o quanto isso é raro no histórico."""
+    if mod is None:
+        return None
+    if ceasa == "BASE":
+        s = list(mod["series"].values())[0] if mod["n_series"] == 1 else serie_local(mensal, produto, "CEASAMINAS - BELO HORIZONTE")[0]
+        onde = mod["fonte"] if mod["n_series"] == 1 else "Conab BH"
+    else:
+        s, _ = serie_local(mensal, produto, ceasa)
+        onde = ceasa.title()
+    s = s.dropna()
+    if s.empty:
+        return None
+    s = _continua(s)
+    adj = s / np.array([mod["indice"][p.month] for p in s.index])
+    desv = _desvios(adj, antes, depois)
+    t = pd.Period(mes, freq="M")
+    if t not in desv.index:
+        return None
+    v = desv[t]
+    raro = float((desv.abs() >= abs(v)).mean())
+    return {"efeito": v, "raridade": raro, "n_meses": len(desv), "onde": onde, "serie": s}
+
+
 # ----------------------------------------------------------------- dinheiro e estatística
 def lucro_ha(preco_ceasa, desconto, prod_t_ha, perda, custo_ha):
     return preco_ceasa * (1 - desconto) * prod_t_ha * 1000 * (1 - perda) - custo_ha
