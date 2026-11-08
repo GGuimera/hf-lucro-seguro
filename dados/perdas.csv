@@ -1,0 +1,8 @@
+produto;perda_tipica_pct;perda_ano_ruim_pct;observacao
+ALHO;20;50;Quebra, chochamento e classificação. Usuário já viu perdas acima de 50%.
+CEBOLA;15;35;Estimativa inicial: descarte, podridão e classificação
+CENOURA;15;35;Estimativa inicial: descarte na lavagem e classificação
+BATATA;10;30;Estimativa inicial
+TOMATE;15;35;Estimativa inicial
+ALFACE;15;30;Estimativa inicial
+PADRAO;10;30;Valor usado para as outras culturas (estimativa inicial)

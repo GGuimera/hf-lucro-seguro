@@ -1,0 +1,10 @@
+produto;custo_ha_2026;custo_ha_min;custo_ha_max;custo_ha_2017;produtividade_t_ha;fonte
+ALHO;250000;220000;300000;100000;13.5;Usuário (2017 e 2026) / ANAPA ago-2026 São Gotardo: R$ 220 mil/ha e 13,5 t/ha / CNA-Campo Futuro 2025: cerca de R$ 300 mil/ha
+CENOURA;70000;66000;80000;45000;65;Usuário (2017 e 2026) / Hortifruti-Cepea verão 2018-19 São Gotardo: R$ 66,2 mil/ha (R$ 28,96 por caixa de 29 kg, cerca de 66 t/ha)
+CEBOLA;70000;45000;100000;45000;50;Usuário (parecido com cenoura) / Epagri-Cepa SC 2025-26: R$ 45 a 49 mil/ha (sequeiro, 25 a 30 t/ha) / regiões irrigadas: R$ 80 a 100 mil/ha / produtividade no Cerrado é estimativa
+TOMATE;237000;208000;250000;;100;Conab Custo de Produção set-2023 Coimbra-MG: R$ 208 mil/ha e 100 t/ha (5.000 caixas de 20 kg) / corrigido pela inflação até 2026 (+14%, estimativa)
+BATATA;77700;68000;80000;;40;Conab Custo de Produção set-2023 Bueno Brandão-MG: R$ 68,1 mil/ha e 40 t/ha (800 sacos de 50 kg) / corrigido pela inflação até 2026 (+14%, estimativa)
+INHAME;70000;58000;75000;;20;Conab Custo de Produção set-2023 Inhapim-MG e Rio Manso-MG: R$ 58 a 65 mil/ha e cerca de 20 t/ha / corrigido pela inflação até 2026 (+14%, estimativa)
+BATATA DOCE;16700;14600;17000;;11;Conab Custo de Produção set-2023 Anhumas-SP: R$ 14,6 mil/ha e 11 t/ha / corrigido pela inflação até 2026 (+14%, estimativa)
+QUIABO;54000;37500;55000;;24;Conab Custo de Produção mar-2018 Itaocara-RJ: R$ 37,5 mil/ha e 24 t/ha / corrigido pela inflação até 2026 (+44%, estimativa)
+MANDIOCA;20600;18000;23000;;25;Conab Custo de Produção mar-2023 Ivinhema-MS: R$ 18 mil/ha e 25 t/ha / corrigido pela inflação até 2026 (+14%, estimativa)

@@ -1,0 +1,21 @@
+# Ambiente Python (recriável com pip)
+.venv/
+__pycache__/
+*.pyc
+
+# Senhas e chaves — NUNCA entram no histórico
+.env
+.env.*
+!.env.exemplo
+
+# Dados grandes ou brutos (ficam só no computador)
+dados/*.db
+dados/*.txt
+dados/conab_arquivo/
+dados/*.xlsx
+dados/planilhas/*
+!dados/planilhas/MODELO_preencher.csv
+!dados/planilhas/LEIA-ME.md
+
+# Cópias de segurança manuais (o Git já guarda as versões)
+backup/
