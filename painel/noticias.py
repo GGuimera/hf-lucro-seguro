@@ -34,6 +34,8 @@ st.markdown(
       .quadro .selo {position:absolute; top:10px; right:10px; background:rgba(10,10,10,.72); border-radius:999px;
                      padding:4px 10px; font-weight:700; font-size:0.95rem; letter-spacing:.01em;}
       .quadro .data {position:absolute; top:12px; left:12px; font-size:0.78rem; opacity:.85; font-weight:600;}
+      .quadro .auto {position:absolute; top:44px; right:10px; background:rgba(224,179,65,.92); color:#1a1a19;
+                     border-radius:999px; padding:2px 8px; font-size:0.7rem; font-weight:700;}
       .quadro .rodape {position:absolute; left:0; right:0; bottom:0; padding:30px 12px 10px 12px;
                        background:linear-gradient(transparent, rgba(0,0,0,.82));}
       .quadro .titulo {font-weight:700; font-size:0.98rem; line-height:1.2;}
@@ -52,7 +54,7 @@ nomes.update({"ALFACE": "Alface", "BATATA": "Batata", "TOMATE": "Tomate"})
 
 
 @st.cache_data(show_spinner="Medindo o efeito de cada evento nos preços…")
-def medir(_ev):
+def medir(_ev, chave):  # 'chave' muda quando entram eventos novos, e aí a conta é refeita
     linhas = []
     for _, e in _ev.iterrows():
         for p in e["produtos"]:
@@ -73,7 +75,7 @@ if ev.empty:
     st.info("Nenhum evento cadastrado (dados\\eventos.csv).")
     st.stop()
 
-med = medir(ev)
+med = medir(ev, tuple(ev["id"]) + tuple(ev["mes"]))
 principal = med.dropna(subset=["efeito"]).assign(a=lambda d: d["efeito"].abs()).sort_values("a", ascending=False) \
     .drop_duplicates("id").set_index("id")
 
@@ -83,8 +85,12 @@ culturas = sorted({p for ps in ev["produtos"] for p in ps})
 cult_sel = f2.multiselect("Cultura", culturas, format_func=lambda p: nomes.get(p, p.title()),
                           placeholder="Todas as culturas")
 ordem = f3.selectbox("Ordenar", ["Mais recentes", "Maior efeito"])
+n_auto = int((ev["conferida"] != "sim").sum())
+ver_auto = st.toggle(f"Mostrar notícias encontradas automaticamente e ainda não conferidas ({n_auto})", value=True)
 
 mostra = ev[ev["tipo"].isin(tipos_sel)]
+if not ver_auto:
+    mostra = mostra[mostra["conferida"] == "sim"]
 if cult_sel:
     mostra = mostra[mostra["produtos"].map(lambda ps: any(p in cult_sel for p in ps))]
 mostra = mostra.assign(ef=mostra["id"].map(principal["efeito"]))
@@ -102,9 +108,10 @@ for _, e in mostra.iterrows():
     else:
         selo, sub = "sem dado", rotulo
     ano, mes = e["mes"][:4], int(e["mes"][5:])
+    marca = '<div class="auto">🤖 não conferida</div>' if e["conferida"] != "sim" else ""
     quadros.append(
         f'<a class="quadro" href="{html.escape(e["url"])}" target="_blank" rel="noopener noreferrer" style="background:{fundo}">'
-        f'<div class="data">{MESES[mes - 1]}/{ano}</div><div class="selo">{selo}</div>'
+        f'<div class="data">{MESES[mes - 1]}/{ano}</div><div class="selo">{selo}</div>{marca}'
         f'<div class="icone">{icone}</div>'
         f'<div class="rodape"><div class="titulo">{html.escape(e["titulo"])}</div><div class="sub">{html.escape(sub)}</div></div></a>'
     )

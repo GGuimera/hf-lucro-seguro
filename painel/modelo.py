@@ -360,8 +360,12 @@ EVENTOS = PASTA / "dados" / "eventos.csv"
 def carregar_eventos():
     if not EVENTOS.exists():
         return pd.DataFrame()
-    ev = pd.read_csv(EVENTOS, sep=";", dtype=str)
-    ev["produtos"] = ev["produtos"].str.split("|")
+    ev = pd.read_csv(EVENTOS, sep=";", dtype=str).dropna(subset=["mes", "titulo", "url"])
+    if "conferida" not in ev.columns:
+        ev["conferida"] = "sim"
+    ev["conferida"] = ev["conferida"].fillna("sim").str.strip().str.lower()
+    ev["produtos"] = ev["produtos"].fillna("").str.split("|")
+    ev["ceasa_medida"] = ev["ceasa_medida"].fillna(CEAGESP_BOL)
     return ev
 
 
