@@ -307,8 +307,79 @@ else:
                     f'<b>{num(ult30["chuva"].sum(), 0)} mm</b> de chuva, contra {num(normal30, 0)} mm normais para a época.</div>',
                     unsafe_allow_html=True)
 
-# ---------- 4. Panorama ----------
-st.subheader("4. Panorama: todos os polos nos próximos 16 dias")
+# ---------- 4. Relevo e microclima ----------
+st.subheader("4. Relevo e microclima do polo")
+RELEVO, GRADE_R = M.PASTA / "dados" / "relevo_polos.csv", M.PASTA / "dados" / "relevo_grade.csv"
+if not RELEVO.exists():
+    st.info("O relevo ainda não foi calculado. Rode coleta\\relevo.py.")
+else:
+    rel = pd.read_csv(RELEVO, sep=";")
+    rr = rel[rel["polo"] == polo].set_index("escala")
+    if rr.empty:
+        st.info("Sem relevo calculado para este polo.")
+    else:
+        esc_r = st.radio("Área", ["regional", "local"], horizontal=True,
+                         format_func=lambda e: f"Região (~{num(rr.loc[e, 'lado_km'], 0)} km de lado)" if e == "regional"
+                         else f"Perto do ponto (~{num(rr.loc[e, 'lado_km'], 1)} km de lado)")
+        r = rr.loc[esc_r]
+        outros = rel[rel["escala"] == esc_r]
+        mais_plano_que = int((outros["decl_media"] > r["decl_media"]).sum())
+        e1, e2, e3, e4 = st.columns(4)
+        with e1:
+            cartao("Altitude", f"{num(r['alt_p10'], 0)} a {num(r['alt_p90'], 0)} m",
+                   f"80% da área nesta faixa · mín {num(r['alt_min'], 0)}, máx {num(r['alt_max'], 0)} m")
+        with e2:
+            cartao("Diferença de temperatura", f"~{num(r['dif_temp_p10_p90'], 1)} °C",
+                   "entre as partes baixas e altas (0,65 °C a cada 100 m)")
+        with e3:
+            cartao("Relevo comparado aos outros polos", f"{len(outros) - mais_plano_que}º mais acidentado",
+                   f"de {len(outros)} polos (1º = mais acidentado)")
+        with e4:
+            cartao("Declividade aproximada", f"{num(r['decl_media'], 1)}%",
+                   "média; serve para COMPARAR polos — o declive real do talhão é maior")
+        if GRADE_R.exists():
+            g = pd.read_csv(GRADE_R, sep=";")
+            g = g[(g["polo"] == polo) & (g["escala"] == esc_r)]
+            z = g.pivot(index="lat", columns="lon", values="alt").sort_index(ascending=False)
+            f5 = go.Figure(go.Heatmap(z=z.values, x=[num(v, 3) for v in z.columns], y=[num(v, 3) for v in z.index],
+                                      colorscale=[[0, "#173052"], [0.5, "#3987e5"], [1, "#e8e4d0"]], xgap=1, ygap=1,
+                                      colorbar=dict(ticksuffix=" m", tickfont=dict(color=TEXTO_2)),
+                                      hovertemplate="lat %{y} · lon %{x}: %{z:.0f} m<extra></extra>"))
+            f5.update_layout(hovermode="closest")
+            f5.update_xaxes(showticklabels=False, title=dict(text="oeste ← → leste", font=dict(color=TEXTO_2)))
+            f5.update_yaxes(showticklabels=False)
+            st.markdown('<p class="dica"><b>Mapa de altitude</b> em volta do ponto de referência (centro): '
+                        "claro = alto, escuro = baixo. Passe o mouse para ver a altitude.</p>", unsafe_allow_html=True)
+            st.plotly_chart(visual(f5, "sul ← → norte", altura=380), width="stretch")
+        st.markdown(
+            f'<div class="aviso"><b>O que isso quer dizer no campo:</b> numa mesma região, a parte {num(r["alt_p90"] - r["alt_p10"], 0)} m '
+            f"mais alta fica em média ~{num(r['dif_temp_p10_p90'], 1)} °C mais fria — o que alonga o ciclo e muda a época. Mas em noites "
+            "frias e sem vento o <b>ar frio escorre e se junta nas baixadas</b>: é ali que a geada pega primeiro, mesmo sendo mais baixo. "
+            "Mapa feito com o Copernicus DEM (pontos de 90 m) pelo Open-Meteo, amostrado a cada "
+            f"{'~2,2 km' if esc_r == 'regional' else '~560 m'}: isso <b>suaviza os declives</b> (no teste, a Serra do RJ passou de 31% "
+            "para 61% de área \"plana ou suave\" só por espaçar mais os pontos). Use a declividade para comparar polos, nunca para "
+            "decidir o talhão.</div>", unsafe_allow_html=True)
+
+# ---------- 5. Notícias de previsão ----------
+st.subheader("5. Notícias de previsão do tempo para este polo")
+NOT_CLIMA = M.PASTA / "dados" / "noticias_clima.csv"
+if not NOT_CLIMA.exists():
+    st.info("Ainda não há notícias de clima. A busca diária (coleta\\buscar_noticias.py) acrescenta as novas.")
+else:
+    nc = pd.read_csv(NOT_CLIMA, sep=";", dtype=str)
+    nc = nc[nc["polos"].fillna("").str.split("|").map(lambda ps: polo in ps or "TODOS" in ps)]
+    nc = nc.sort_values("data", ascending=False).head(10)
+    if nc.empty:
+        st.info("Nenhuma notícia de previsão recente cita esta região.")
+    icone = {"frio": "❄️", "chuva": "🌧️", "calor": "🔥", "enos": "🌊"}
+    for n in nc.itertuples():
+        tag = " · 🤖 não conferida" if n.conferida != "sim" else ""
+        geral = " · notícia geral do país" if "TODOS" in n.polos.split("|") else ""
+        st.markdown(f"{icone.get(n.tipo, '🌤️')} **{n.data[8:10]}/{n.data[5:7]}** · [{n.titulo}]({n.url}) — {n.fonte}{geral}{tag}")
+    st.caption("Encontradas automaticamente no Google Notícias todo dia (só título, fonte e link). Confira sempre na fonte.")
+
+# ---------- 6. Panorama ----------
+st.subheader("6. Panorama: todos os polos nos próximos 16 dias")
 if st.toggle("Mostrar o panorama de todos os polos (busca a previsão de cada um)", value=False):
     linhas = []
     for r in polos.itertuples():

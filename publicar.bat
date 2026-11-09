@@ -4,7 +4,9 @@ rem O Streamlit Cloud percebe a mudanca e atualiza o site sozinho em 1 a 3 minut
 cd /d "%~dp0"
 ".venv\Scripts\python.exe" coleta\exportar_online.py
 if errorlevel 1 goto erro
-git add online dados\eventos.csv dados\culturas.csv dados\custos.csv dados\perdas.csv
+rem dados\*.csv = tabelas do sistema (culturas, custos, eventos, polos, relevo, noticias de clima...).
+rem A planilha propria fica em dados\planilhas e NAO entra.
+git add online dados\*.csv
 git commit -m "Atualiza dados do painel online"
 git push
 if errorlevel 1 goto erro

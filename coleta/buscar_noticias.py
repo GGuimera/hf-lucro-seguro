@@ -45,6 +45,37 @@ BUSCAS = [
     "hortaliças preço Ceasa", "hortifruti preço clima", "Ceagesp preço hortaliças", "Conab Prohort preços",
 ]
 
+# ----- notícias de PREVISÃO DO CLIMA (vão para dados\noticias_clima.csv, ligadas aos polos produtores) -----
+NOT_CLIMA = PASTA / "dados" / "noticias_clima.csv"
+CAMPOS_CLIMA = ["id", "data", "titulo", "tipo", "polos", "fonte", "url", "conferida"]
+MAX_CLIMA = 8
+BUSCAS_CLIMA = [
+    "previsão frente fria geada", "Inmet alerta geada", "previsão chuva volumosa Sudeste", "El Niño La Niña previsão",
+    "veranico previsão", "previsão do tempo agricultura Minas Gerais", "previsão do tempo Goiás chuva",
+    "previsão chuva Santa Catarina", "onda de calor previsão",
+]
+PREVISAO = r"\b(previs|alerta|frente fria|massa de ar|el nino|la nina|veranico|onda de calor|geada|tempestade|chuva volumosa|chuvas? (forte|intensa)|inmet|climatempo|metsul|cptec|tendencia)"
+TIPOS_CLIMA = [
+    ("frio", r"\b(geada|geadas|frente fria|massa de ar (frio|polar)|frio|baixas temperaturas)"),
+    ("chuva", r"\b(chuva|chuvas|temporal|tempestade|enchente|granizo|volumos)"),
+    ("calor", r"\b(calor|seca|estiagem|veranico|temperaturas altas)"),
+    ("enos", r"\b(el nino|la nina|enos|oceano pacifico)"),
+]
+# palavra no título -> polos (dados\polos.csv)
+REGIOES = [
+    (r"\b((?<!sul de )minas|mineiro|mg\b|alto paranaiba|triangulo|cerrado mineiro)", ["SAO_GOTARDO", "PERDIZES", "SUL_MINAS"]),
+    (r"\b(sul de minas|mantiqueira)", ["SUL_MINAS"]),
+    (r"\b(goias|goiano|distrito federal|brasilia|df\b|go\b|centro-oeste|cristalina)", ["CRISTALINA", "SILVANIA"]),
+    (r"\b(bahia|baiano|chapada diamantina|irece|ba\b)", ["CHAPADA", "IRECE"]),
+    (r"\b(santa catarina|catarinense|sc\b|alto vale)", ["ITUPORANGA"]),
+    (r"\b(parana|paranaense|pr\b)", ["GUARAPUAVA"]),
+    (r"\b(sul do pais|sul do brasil|regiao sul|(no|do|ao|areas do) sul\b|rio grande do sul|gaucho)", ["ITUPORANGA", "GUARAPUAVA"]),
+    (r"\b(sao paulo|paulista|\bsp\b)", ["CASA_BRANCA", "ITAPEVA", "MOGI", "MONTE_ALTO"]),
+    (r"\b(rio de janeiro|fluminense|\brj\b|regiao serrana)", ["SERRA_RJ"]),
+    (r"\b(sudeste)", ["SAO_GOTARDO", "PERDIZES", "SUL_MINAS", "CASA_BRANCA", "ITAPEVA", "MOGI", "MONTE_ALTO", "SERRA_RJ"]),
+    (r"\b(nordeste|pernambuco|petrolina|sao francisco|semiarido|sertao)", ["PETROLINA", "IRECE", "CHAPADA"]),
+]
+
 
 def sem_acento(t):
     return "".join(c for c in unicodedata.normalize("NFD", t.lower()) if unicodedata.category(c) != "Mn")
@@ -91,7 +122,67 @@ def classificar(titulo):
     return tipo, produtos[:3]
 
 
+def classificar_clima(titulo):
+    """Tipo de previsão e polos citados; (None, []) se o título não for uma previsão/alerta de clima."""
+    t = sem_acento(titulo) + " "
+    if not re.search(PREVISAO, t):
+        return None, []
+    tipo = next((tp for tp, rx in TIPOS_CLIMA if re.search(rx, t)), None)
+    if not tipo:
+        return None, []
+    polos = []
+    for rx, ps in REGIOES:
+        if re.search(rx, t):
+            polos += [p for p in ps if p not in polos]
+    if not polos and (tipo == "enos" or re.search(r"\b(brasil|pais|todo o pais)", t)):
+        polos = ["TODOS"]
+    return (tipo, polos) if polos else (None, [])
+
+
+def buscar_clima():
+    existentes = []
+    if NOT_CLIMA.exists():
+        with open(NOT_CLIMA, encoding="utf-8") as f:
+            existentes = list(csv.DictReader(f, delimiter=";"))
+    urls = {e["url"] for e in existentes}
+    titulos = [sem_acento(e["titulo"]) for e in existentes]
+    prox_id = max([int(e["id"]) for e in existentes] or [0]) + 1
+    novas, vistas = [], 0
+    for consulta in BUSCAS_CLIMA:
+        try:
+            itens = list(buscar(consulta))
+        except Exception as e:
+            registrar(f"ERRO na busca de clima '{consulta}': {e}")
+            continue
+        for it in itens:
+            vistas += 1
+            if len(novas) >= MAX_CLIMA or it["url"] in urls:
+                continue
+            tipo, polos = classificar_clima(it["titulo"])
+            if not tipo:
+                continue
+            tn = sem_acento(it["titulo"])
+            if any(SequenceMatcher(None, tn, t).ratio() > 0.75 for t in titulos):
+                continue
+            novas.append({"id": str(prox_id), "data": f"{it['data']:%Y-%m-%d}", "titulo": it["titulo"][:140], "tipo": tipo,
+                          "polos": "|".join(polos), "fonte": it["fonte"], "url": it["url"], "conferida": "nao"})
+            prox_id += 1
+            urls.add(it["url"])
+            titulos.append(tn)
+        time.sleep(2)
+    if novas:
+        novo_arquivo = not NOT_CLIMA.exists()
+        with open(NOT_CLIMA, "a", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=CAMPOS_CLIMA, delimiter=";")
+            if novo_arquivo:
+                w.writeheader()
+            w.writerows(novas)
+    registrar(f"clima: {vistas} notícias lidas, {len(novas)} previsões novas: " +
+              "; ".join(f"[{n['tipo']}] {n['titulo'][:60]}" for n in novas))
+
+
 def main():
+    buscar_clima()
     with open(EVENTOS, encoding="utf-8") as f:
         existentes = list(csv.DictReader(f, delimiter=";"))
     campos = list(existentes[0].keys()) if existentes else \
