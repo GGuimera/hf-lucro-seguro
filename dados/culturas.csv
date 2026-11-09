@@ -1,30 +1,30 @@
-produto;nome;ciclo_dias;janela_venda_dias;cal_altitude_cerrado;cal_altitude_fria;cal_planalto
-ABOBORA;Abóbora;110;30;110000001111;100000001111;110000001111
-ABOBRINHA;Abobrinha;55;45;111000011111;100000011111;111000011111
-ALFACE;Alface;70;10;111111111111;111111111111;111111111111
-ALHO;Alho;150;60;011100000000;001100000000;001110000000
-BATATA;Batata;110;20;011111111100;011000011100;011000111110
-BATATA DOCE;Batata-doce;135;45;100000001111;000000001111;100000001111
-BERINJELA;Berinjela;110;90;110000011111;100000001111;110000011111
-BETERRABA;Beterraba;75;20;111111111111;111111111111;011111110000
-BROCOLO;Brócolis;95;30;011111100000;111111111111;011111000000
-CARA;Cará;240;60;000000011100;000000011100;000000011100
-CEBOLA;Cebola;170;30;011110000000;001110000000;001110000000
-CENOURA;Cenoura;100;20;111111111111;111111111111;011111100111
-CHUCHU;Chuchu;110;150;000000011110;000000011110;000000011110
-COUVE;Couve;70;120;111111111111;111111111111;111111111111
-COUVE-FLOR;Couve-flor;105;20;011111100000;111111111111;011111000000
-INHAME;Inhame;240;60;000000011100;000000011100;000000011100
-JILO;Jiló;100;90;110000011111;100000001111;110000011111
-MANDIOCA;Mandioca;360;120;000000001110;000000001110;000000001110
-MANDIOQUINHA;Mandioquinha;300;60;001110000000;001110001110;001110000000
-MELANCIA;Melancia;90;20;000000011111;000000001111;000000011111
-MELAO AMARELO;Melão amarelo;85;20;000000011110;000000001110;000000011110
-MILHO VERDE;Milho verde;90;15;000000011111;000000001111;000000011111
-MORANGO;Morango;80;150;001110000000;001110000000;001110000000
-PEPINO;Pepino;55;40;111000011111;100000011111;111000011111
-PIMENTAO VERDE;Pimentão verde;110;120;110000011111;100000001111;110000011111
-QUIABO;Quiabo;75;75;110000001111;100000001111;110000001111
-REPOLHO;Repolho;100;20;111111111111;111111111111;111111111111
-TOMATE;Tomate;110;60;111000111111;100000011111;111000111111
-VAGEM;Vagem;65;30;001110011100;001000011110;001110011100
+produto;nome;ciclo_verao;ciclo_inverno;janela_verao;janela_inverno;cal_altitude_cerrado;cal_altitude_fria;cal_planalto;fonte_ciclo
+ABOBORA;Abóbora;110;110;30;30;110000001111;100000001111;110000001111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+ABOBRINHA;Abobrinha;55;55;45;45;111000011111;100000011111;111000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+ALFACE;Alface;60;70;10;10;111111111111;111111111111;111111111111;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): verão 50-70 d, inverno 60-80 d (meio de cada faixa)
+ALHO;Alho;150;150;60;60;011100000000;001100000000;001110000000;Ciclo único (cultura de época definida): estimativa inicial do sistema
+BATATA;Batata;90;120;20;20;011111111100;011000011100;011000111110;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): 90-120 d (ponta curta no verão, longa no inverno)
+BATATA DOCE;Batata-doce;135;135;45;45;100000001111;000000001111;100000001111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+BERINJELA;Berinjela;110;110;90;90;110000011111;100000001111;110000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+BETERRABA;Beterraba;60;70;20;20;111111111111;111111111111;011111110000;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): 60-70 d (ponta curta no verão, longa no inverno)
+BROCOLO;Brócolis;90;95;30;30;011111100000;111111111111;011111000000;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): verão 80-100 d, inverno 90-100 d (meio de cada faixa)
+CARA;Cará;240;240;60;60;000000011100;000000011100;000000011100;Ciclo único (cultura de época definida): estimativa inicial do sistema
+CEBOLA;Cebola;170;170;30;30;011110000000;001110000000;001110000000;Ciclo único (cultura de época definida): estimativa inicial do sistema
+CENOURA;Cenoura;120;135;20;30;111111111111;111111111111;011111100111;Produtor de São Gotardo: maturação 120 d no verão e 130-140 d no inverno + 10-30 d de colheita (Embrapa, hortas: 85-100 verão / 90-110 inverno)
+CHUCHU;Chuchu;110;110;150;150;000000011110;000000011110;000000011110;Ciclo único (cultura de época definida): estimativa inicial do sistema
+COUVE;Couve;80;90;120;120;111111111111;111111111111;111111111111;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): 80-90 d até a 1ª colheita (ponta curta no verão, longa no inverno)
+COUVE-FLOR;Couve-flor;95;105;20;20;011111100000;111111111111;011111000000;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): verão 90-100 d, inverno 100-110 d (meio de cada faixa)
+INHAME;Inhame;240;240;60;60;000000011100;000000011100;000000011100;Ciclo único (cultura de época definida): estimativa inicial do sistema
+JILO;Jiló;100;100;90;90;110000011111;100000001111;110000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+MANDIOCA;Mandioca;360;360;120;120;000000001110;000000001110;000000001110;Ciclo único (cultura de época definida): estimativa inicial do sistema
+MANDIOQUINHA;Mandioquinha;300;300;60;60;001110000000;001110001110;001110000000;Ciclo único (cultura de época definida): estimativa inicial do sistema
+MELANCIA;Melancia;90;90;20;20;000000011111;000000001111;000000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+MELAO AMARELO;Melão amarelo;85;85;20;20;000000011110;000000001110;000000011110;Ciclo único (cultura de época definida): estimativa inicial do sistema
+MILHO VERDE;Milho verde;90;90;15;15;000000011111;000000001111;000000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+MORANGO;Morango;80;80;150;150;001110000000;001110000000;001110000000;Ciclo único (cultura de época definida): estimativa inicial do sistema
+PEPINO;Pepino;55;55;40;40;111000011111;100000011111;111000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+PIMENTAO VERDE;Pimentão verde;110;110;120;120;110000011111;100000001111;110000011111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+QUIABO;Quiabo;75;75;75;75;110000001111;100000001111;110000001111;Ciclo único (cultura de época definida): estimativa inicial do sistema
+REPOLHO;Repolho;90;110;20;20;111111111111;111111111111;111111111111;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): 90-110 d (ponta curta no verão, longa no inverno)
+TOMATE;Tomate;100;120;60;60;111000111111;100000011111;111000111111;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): 100-120 d até a 1ª colheita (ponta curta no verão, longa no inverno)
+VAGEM;Vagem;65;65;30;30;001110011100;001000011110;001110011100;Ciclo único (cultura de época definida): estimativa inicial do sistema

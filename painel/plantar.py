@@ -63,8 +63,8 @@ for _, c in cult.iterrows():
     mod = M.modelo_produto(mensal, pl, c["produto"])
     if mod is None:
         continue
-    colheita = plantio + timedelta(days=int(c["ciclo_dias"]))
-    jan = int(c["janela_venda_dias"])
+    ciclo, jan = M.ciclo_janela(c, plantio)  # verão/inverno conforme o mês do plantio
+    colheita = plantio + timedelta(days=ciclo)
     R = M.cenarios(mod, colheita, jan)
     if R.empty:
         continue

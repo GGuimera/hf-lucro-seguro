@@ -83,7 +83,7 @@ onde = "na média do Brasil (todas as Ceasas)" if ceasa == M.BRASIL else f"na {c
 metodo = c4.selectbox("Como estimar o preço normal", M.METODOS)
 
 linha = cult[cult["produto"] == produto].iloc[0]
-ciclo, janela, calendario = int(linha["ciclo_dias"]), int(linha["janela_venda_dias"]), linha[cal_col]
+calendario = linha[cal_col]
 cs = custos[custos["produto"] == produto] if len(custos) else pd.DataFrame()
 perda_tip_pad, perda_ruim_pad = M.perdas_de(perdas, produto)
 _, unidade_cod = M.serie_local(mensal, produto, ceasa)
@@ -122,6 +122,7 @@ conf = M.confianca(mod)
 linhas = []
 for mes in range(1, 13):
     plantio = M.data_plantio(mes, hoje)
+    ciclo, janela = M.ciclo_janela(linha, plantio)  # verão/inverno conforme o mês do plantio
     colheita = plantio + timedelta(days=ciclo)
     meio = colheita + timedelta(days=janela // 2)
     R = M.cenarios(mod, colheita, janela)
@@ -129,7 +130,7 @@ for mes in range(1, 13):
     boa = calendario[mes - 1] == "1"
     prod_ef = prod_t * (1 if boa else 1 - queda)
     E = M.esperado(R)
-    r = {"mes": mes, "plantio": plantio, "colheita": colheita, "meses_v": M.meses_da_venda(colheita, janela),
+    r = {"mes": mes, "plantio": plantio, "colheita": colheita, "ciclo": ciclo, "janela": janela, "meses_v": M.meses_da_venda(colheita, janela),
          "R": R, "E": E, "epoca": M.fator_epoca(mod, colheita, janela), "boa": boa, "prod_ef": prod_ef,
          "pn": pn, "pn_txt": pn_txt, "faixa": faixa, "atacado": pn * E, "produtor": pn * E * (1 - desconto),
          "k_acima": int((R > 1).sum()), "n": len(R)}
@@ -155,7 +156,7 @@ st.subheader("1. Resumo")
 anos_txt = f"{mod['anos'][0]}–{mod['anos'][-1]}"
 st.markdown(
     f'<p class="dica">Base do histórico: <b>{mod["fonte"]}</b> · cenários de {len(melhor["R"])} anos ({anos_txt}) · '
-    f"ciclo de {ciclo} dias e venda por cerca de {janela} dias · preço em R$ por {unidade} {onde}. "
+    f"{M.texto_ciclo(linha)} · preço em R$ por {unidade} {onde}. "
     f'Confiança na época: <span class="selo" style="background:{COR_CONF[conf]}22;color:{COR_CONF[conf]}">{conf}</span></p>',
     unsafe_allow_html=True,
 )
@@ -346,8 +347,8 @@ else:
 # ---------- 6. Passo a passo ----------
 st.subheader("6. Passo a passo do cálculo (mês escolhido acima)")
 passos = [
-    f"<b>Plantio</b> em {r['plantio']:%d/%m/%Y} + ciclo de {ciclo} dias = <b>colheita a partir de {r['colheita']:%d/%m/%Y}</b>; "
-    f"venda por cerca de {janela} dias em <b>{', '.join(MESES_LONGO[x - 1] for x in r['meses_v'])}</b> "
+    f"<b>Plantio</b> em {r['plantio']:%d/%m/%Y} + ciclo de {r['ciclo']} dias (para plantio neste mês) = <b>colheita a partir de {r['colheita']:%d/%m/%Y}</b>; "
+    f"colheita/venda por cerca de {r['janela']} dias em <b>{', '.join(MESES_LONGO[x - 1] for x in r['meses_v'])}</b> "
     "(cada mês pesa pelos dias de venda que caem nele).",
     f"<b>Preço normal</b> {onde}: <b>{brl(r['pn'])}/{unidade}</b> ({r['pn_txt']}).",
     f"<b>Época</b> dos meses de venda: {pct((r['epoca'] - 1) * 100)} num ano normal. "

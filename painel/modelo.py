@@ -139,8 +139,8 @@ def carregar():
     mensal = todas.groupby(["ceasa", "produto", "unidade", "periodo"], as_index=False)["preco"].median()
     df = todas[todas["uf"].isin(["MG", "RJ", "SP", "BR"])].drop(columns="periodo").reset_index(drop=True)
     cult = pd.read_csv(CULTURAS, sep=";", dtype=str)
-    cult["ciclo_dias"] = cult["ciclo_dias"].astype(int)
-    cult["janela_venda_dias"] = cult["janela_venda_dias"].astype(int)
+    for col in ("ciclo_verao", "ciclo_inverno", "janela_verao", "janela_inverno"):
+        cult[col] = cult[col].astype(int)
     custos = pd.read_csv(CUSTOS, sep=";") if CUSTOS.exists() else pd.DataFrame()
     perdas = pd.read_csv(PERDAS, sep=";") if PERDAS.exists() else pd.DataFrame()
     return df, mensal, cult, pl, custos, perdas
@@ -482,6 +482,27 @@ def intervalo_bootstrap(x, vezes=2000, nivel=0.90, semente=42):
     medias = rng.choice(x, size=(vezes, len(x)), replace=True).mean(axis=1)
     a = (1 - nivel) / 2
     return float(np.quantile(medias, a)), float(np.quantile(medias, 1 - a))
+
+
+# Quanto o plantio de cada mês é "de inverno" (0 = verão pleno, 1 = inverno pleno). Transição gradual:
+# nov-jan = verão; abr-jun = inverno; fev-mar e jul-out ficam no meio do caminho.
+PESO_INVERNO = {1: 0, 2: 1 / 3, 3: 2 / 3, 4: 1, 5: 1, 6: 1, 7: 0.8, 8: 0.6, 9: 0.4, 10: 0.2, 11: 0, 12: 0}
+
+
+def ciclo_janela(linha, plantio):
+    """Dias até começar a colher e dias de colheita/venda para um plantio nesta data (verão → inverno, gradual)."""
+    w = PESO_INVERNO[plantio.month]
+    ciclo = round(linha["ciclo_verao"] + (linha["ciclo_inverno"] - linha["ciclo_verao"]) * w)
+    janela = round(linha["janela_verao"] + (linha["janela_inverno"] - linha["janela_verao"]) * w)
+    return int(ciclo), int(janela)
+
+
+def texto_ciclo(linha):
+    """Ex.: 'ciclo de 120 (verão) a 135 dias (inverno) e colheita por 20 a 30 dias'."""
+    cv, ci, jv, ji = (int(linha[k]) for k in ("ciclo_verao", "ciclo_inverno", "janela_verao", "janela_inverno"))
+    c = f"ciclo de {cv} dias" if cv == ci else f"ciclo de {cv} (verão) a {ci} dias (inverno)"
+    j = f"colheita/venda por cerca de {jv} dias" if jv == ji else f"colheita/venda por {jv} a {ji} dias"
+    return f"{c} e {j}"
 
 
 def data_plantio(mes, hoje=None):
