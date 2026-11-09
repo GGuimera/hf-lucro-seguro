@@ -1,0 +1,30 @@
+produto;nome;grupo;origem;codigo;praca;unidade;tipo;meses_a;mes_alvo;custo_cultura;custo_planilha;custo_locais;polos;explica_a
+SOJA;Soja;Grãos;cepea;soja;;R$/saca 60 kg;estocavel;3|4;;soja;;Sorriso|Rio Verde|Cascavel|Dourados;SORRISO|RIO_VERDE|CASCAVEL|DOURADOS|PASSO_FUNDO|LEM|BALSAS;vender tudo na colheita (março e abril)
+MILHO;Milho;Grãos;cepea;milho;;R$/saca 60 kg;estocavel;6|7|8;;milho;milho_2a_safra;Sorriso|Rio Verde|Dourados|Cascavel;SORRISO|RIO_VERDE|CASCAVEL|DOURADOS|PASSO_FUNDO;vender tudo na colheita da safrinha (junho a agosto)
+TRIGO;Trigo (Paraná);Grãos;cepea;trigo;Paraná;R$/tonelada;estocavel;9|10|11;;trigo;;Cascavel|Ponta Grossa|Londrina|Passo Fundo|Cruz Alta;CASCAVEL|PASSO_FUNDO;vender tudo na colheita (setembro a novembro)
+ARROZ;Arroz em casca (RS);Grãos;cepea;arroz;;R$/saca 50 kg;estocavel;2|3|4;;arroz;arroz_irrigado;Uruguaiana|Pelotas|Cachoeira do Sul;URUGUAIANA;vender tudo na colheita (fevereiro a abril)
+CAFE_ARABICA;Café arábica;Café;cepea;cafe_arabica;;R$/saca 60 kg;estocavel;5|6|7|8;;cafe_arabica;;Patrocínio|Guaxupé|Varginha|Luís Eduardo Magalhães;CERRADO_MINEIRO|SUL_MINAS_CAFE;vender tudo na colheita (maio a agosto)
+CAFE_ROBUSTA;Café conilon / robusta (ES);Café;cepea;cafe_robusta;;R$/saca 60 kg;estocavel;4|5|6;;cafe_conilon;;Rio Bananal|Pinheiros|Colatina|Castelo;LINHARES|CACOAL;vender tudo na colheita (abril a junho)
+ACUCAR;Açúcar cristal (SP);Açúcar e etanol;cepea;acucar;;R$/saca 50 kg;fluxo;;;;;;RIBEIRAO_PRETO;vender igual em todos os meses
+ETANOL;Etanol hidratado (SP);Açúcar e etanol;cepea;etanol_hidratado;;R$/litro;fluxo;;;;;;RIBEIRAO_PRETO;vender igual em todos os meses
+BOI;Boi gordo (SP);Pecuária;cepea;boi;;R$/arroba;fluxo;;;;;;CAMPO_GRANDE|SORRISO|MARABA;vender igual em todos os meses
+BEZERRO;Bezerro (MS);Pecuária;cepea;bezerro;;R$/cabeça;fluxo;;;;;;CAMPO_GRANDE;vender igual em todos os meses
+FRANGO;Frango congelado (SP);Pecuária;cepea;frango_congelado;;R$/kg;fluxo;;;;;;CASCAVEL;vender igual em todos os meses
+SUINO;Suíno vivo (média das praças);Pecuária;cepea;suino;;R$/kg;fluxo;;;;;;CASCAVEL;vender igual em todos os meses
+LEITE;Leite ao produtor (média Brasil);Pecuária;cepea;leite;;R$/litro;fluxo;;;;;;PATOS_MINAS|SUL_MINAS_CAFE;vender igual em todos os meses
+DIESEL;Diesel S10 (bomba, média Brasil);Petróleo e fertilizantes;anp;DIESEL S10;;R$/litro;insumo;7|8|9;9;;;;;comprar nos meses de costume (julho a setembro, antes do plantio da soja)
+BRENT;Petróleo Brent;Petróleo e fertilizantes;wb;Crude oil, Brent;;R$/barril;referencia;;;;;;;
+GAS_NATURAL;Gás natural (Europa) — base da ureia;Petróleo e fertilizantes;wb;Natural gas, Europe;;R$/milhão de BTU;referencia;;;;;;;
+UREIA;Ureia (nitrogênio);Petróleo e fertilizantes;wb;Urea;;R$/tonelada;insumo;7|8|9;9;;;;;comprar nos meses de costume (julho a setembro, antes do plantio da soja)
+KCL;Cloreto de potássio (potássio);Petróleo e fertilizantes;wb;Potassium chloride;;R$/tonelada;insumo;7|8|9;9;;;;;comprar nos meses de costume (julho a setembro, antes do plantio da soja)
+DAP;DAP (fósforo + nitrogênio);Petróleo e fertilizantes;wb;DAP;;R$/tonelada;insumo;7|8|9;9;;;;;comprar nos meses de costume (julho a setembro, antes do plantio da soja)
+TSP;Superfosfato triplo (fósforo);Petróleo e fertilizantes;wb;TSP;;R$/tonelada;insumo;7|8|9;9;;;;;comprar nos meses de costume (julho a setembro, antes do plantio da soja)
+ROCHA_FOSFATICA;Rocha fosfática;Petróleo e fertilizantes;wb;Phosphate rock;;R$/tonelada;referencia;;;;;;;
+OLEO_SOJA;Óleo de soja (mundo);Mercado mundial;wb;Soybean oil;;R$/tonelada;referencia;;;;;;;
+OLEO_PALMA;Óleo de palma (mundo);Mercado mundial;wb;Palm oil;;R$/tonelada;referencia;;;;;;;
+SOJA_MUNDO;Soja (mundo);Mercado mundial;wb;Soybeans;;R$/tonelada;referencia;;;;;;;
+MILHO_MUNDO;Milho (mundo, EUA);Mercado mundial;wb;Maize;;R$/tonelada;referencia;;;;;;;
+TRIGO_MUNDO;Trigo (mundo, EUA HRW);Mercado mundial;wb;Wheat, US HRW;;R$/tonelada;referencia;;;;;;;
+CAFE_MUNDO;Café arábica (mundo);Mercado mundial;wb;Coffee, Arabica;;R$/kg;referencia;;;;;;;
+ACUCAR_MUNDO;Açúcar (mundo);Mercado mundial;wb;Sugar, world;;R$/kg;referencia;;;;;;;
+CARNE_MUNDO;Carne bovina (mundo);Mercado mundial;wb;Beef;;R$/kg;referencia;;;;;;;

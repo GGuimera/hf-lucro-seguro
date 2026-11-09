@@ -1,0 +1,7 @@
+produto;custo_total_ha;custo_operacional_ha;produtividade;unidade_prod;local;safra;referencia;sistema;fonte
+SOJA;6329.44;5019.68;60.0;60 kg;Sorriso-MT;2026/27;Março/2026;AGRICULTURA EMPRESARIAL - SOJA - PLANTIO DIRETO - ALTA TECNOLOGIA - OGM;Conab — Custos de produção (serie-historica-custos-soja-1997-a-2026.xls, aba OGM-Sorriso-MT-2026)
+MILHO;4501.17;4201.16;120.0;60 kg;Sorriso-MT;2026/26;Março/2026;AGRICULTURA EMPRESARIAL - MILHO - PLANTIO DIRETO - ALTA TECNOLOGIA - OGM;Conab — Custos de produção (milho_2a_safra_serie_historica_2005-2026.xls, aba Sorriso-MT-2026)
+TRIGO;7731.28;5214.32;58.3;SACO (JUTA) -  60 kg;Cascavel-PR;2025/25;Novembro/2025;AGRICULTURA EMPRESARIAL - TRIGO - PLANTIO DIRETO - ALTA TECNOLOGIA;Conab — Custos de produção (seriehistoricacustostrigo1998a2025.xls, aba Cascavel-PR-2025-11)
+ARROZ;14033.17;12962.36;176.0;50 kg;Uruguaiana-RS;2026/27;Março/2026;AGRICULTURA EMPRESARIAL - ARROZ - CULTIVO MÍNIMO - IRRIGADO;Conab — Custos de produção (arroz_irrigado_serie_historica_2002-2026.xls, aba Uruguaiana-RS-2026)
+CAFE_ARABICA;33752.94;28164.21;28.0;60 kg;Patrocínio-MG;2025;Outubro/2025;AGRICULTURA EMPRESARIAL - CAFÉ - CULTIVO SEMI ADENSADO - ALTA TECNOLOGIA - MECANIZADO;Conab — Custos de produção (seriehistoricacustoscafearabica2003a2025.xls, aba Patrocínio-MG-2025)
+CAFE_ROBUSTA;75374.92;68300.2;90.0;60 kg;Rio Bananal-ES;2025;Outubro/2025;AGRICULTURA FAMILIAR - CAFÉ - CULTIVO SEMI ADENSADO - IRRIGADO;Conab — Custos de produção (seriehistoricacustoscafeconilon2007a2025.xls, aba Rio Bananal-ES-2025)

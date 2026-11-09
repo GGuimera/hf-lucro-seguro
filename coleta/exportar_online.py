@@ -49,6 +49,13 @@ def main():
         total = 0
         tabelas = {t: (lambda t=t: pd.read_sql(f"SELECT * FROM {t}", con)) for t in PUBLICAS}
         tabelas["planilha_bh"] = lambda: planilha_so_desenho(con)
+        # commodities e artigos (dados públicos: Cepea, Banco Mundial, ANP, Banco Central, OpenAlex, Embrapa)
+        tabelas["agro_mensal"] = lambda: pd.read_sql("SELECT * FROM agro_mensal", con)
+        tabelas["agro_diario"] = lambda: pd.read_sql("SELECT * FROM agro_diario WHERE data >= date('now', '-400 days')", con)
+        tabelas["artigos"] = lambda: pd.read_sql("SELECT * FROM artigos", con)
+        # só as previsões dos últimos 3 dias (a página mostra a mais nova)
+        tabelas["previsao_log"] = lambda: pd.read_sql(
+            "SELECT * FROM previsao_log WHERE coletado_em >= date((SELECT MAX(coletado_em) FROM previsao_log), '-2 days')", con)
         for t, ler in tabelas.items():
             if t not in existe:
                 print(f"{t}: não existe no banco, pulei")

@@ -1,0 +1,42 @@
+cultura;nome;grupo;busca_en;palavras
+ABOBORA;Abóbora;Hortaliças;"Cucurbita moschata" OR pumpkin OR squash;abóbora|abobora|cucurbita moschata|pumpkin
+ABOBRINHA;Abobrinha;Hortaliças;"Cucurbita pepo" OR zucchini;abobrinha|cucurbita pepo|zucchini
+ALFACE;Alface;Hortaliças;"Lactuca sativa" OR lettuce;alface|lactuca|lettuce
+ALHO;Alho;Hortaliças;"Allium sativum" OR garlic;alho|allium sativum|garlic
+BATATA;Batata;Hortaliças;"Solanum tuberosum" OR potato;batata(?![ -]doce)|solanum tuberosum|potato(?:es)?(?! sweet)
+BATATA DOCE;Batata-doce;Hortaliças;"Ipomoea batatas" OR "sweet potato";batata[ -]doce|ipomoea batatas|sweet ?potato
+BERINJELA;Berinjela;Hortaliças;"Solanum melongena" OR eggplant;berinjela|solanum melongena|eggplant|aubergine
+BETERRABA;Beterraba;Hortaliças;"Beta vulgaris" OR beetroot OR "table beet";beterraba|beta vulgaris|beetroot|table beet
+BROCOLO;Brócolis;Hortaliças;broccoli OR "Brassica oleracea var. italica";brócolis|brocolis|brócolo|broccoli
+CARA;Cará;Hortaliças;"Dioscorea alata" OR "water yam";cará\b|dioscorea alata|water yam
+CEBOLA;Cebola;Hortaliças;"Allium cepa" OR onion;cebola|allium cepa|onion
+CENOURA;Cenoura;Hortaliças;"Daucus carota" OR carrot;cenoura|daucus carota|carrot
+CHUCHU;Chuchu;Hortaliças;"Sechium edule" OR chayote;chuchu|sechium edule|chayote
+COUVE;Couve;Hortaliças;kale OR "Brassica oleracea var. acephala" OR collard;couve(?![ -]flor)|kale|collard|acephala
+COUVE-FLOR;Couve-flor;Hortaliças;cauliflower OR "Brassica oleracea var. botrytis";couve[ -]flor|cauliflower|botrytis var
+INHAME;Inhame;Hortaliças;"Colocasia esculenta" OR taro;inhame|colocasia esculenta|taro\b
+JILO;Jiló;Hortaliças;"Solanum aethiopicum" OR "scarlet eggplant";jiló|jilo\b|solanum aethiopicum|scarlet eggplant
+MANDIOCA;Mandioca;Hortaliças;"Manihot esculenta" OR cassava;mandioca|aipim|manihot esculenta|cassava
+MANDIOQUINHA;Mandioquinha;Hortaliças;"Arracacia xanthorrhiza" OR arracacha;mandioquinha|batata[ -]baroa|arracacia|arracacha
+MELANCIA;Melancia;Hortaliças;"Citrullus lanatus" OR watermelon;melancia|citrullus lanatus|watermelon
+MELAO AMARELO;Melão;Hortaliças;"Cucumis melo" OR melon;melão|melao|cucumis melo|\bmelons?\b
+MILHO VERDE;Milho verde;Hortaliças;"sweet corn" OR "green corn";milho[ -]verde|sweet ?corn|green corn
+MORANGO;Morango;Hortaliças;"Fragaria x ananassa" OR strawberry;morango|fragaria|strawberr
+PEPINO;Pepino;Hortaliças;"Cucumis sativus" OR cucumber;pepino|cucumis sativus|cucumber
+PIMENTAO VERDE;Pimentão;Hortaliças;"Capsicum annuum" OR "sweet pepper" OR "bell pepper";pimentão|pimentao|capsicum annuum|sweet pepper|bell pepper
+QUIABO;Quiabo;Hortaliças;"Abelmoschus esculentus" OR okra;quiabo|abelmoschus|okra
+REPOLHO;Repolho;Hortaliças;cabbage OR "Brassica oleracea var. capitata";repolho|cabbage|capitata
+TOMATE;Tomate;Hortaliças;"Solanum lycopersicum" OR tomato;tomate|tomateiro|solanum lycopersicum|tomato
+VAGEM;Vagem;Hortaliças;"snap bean" OR "green bean";vagem|feijão[ -]vagem|snap ?beans?|green ?beans?
+SOJA;Soja;Grãos;"Glycine max" OR soybean;soja|glycine max|soybean
+MILHO;Milho;Grãos;"Zea mays" OR maize;milho(?![ -]verde)|zea mays|maize|\bcorn\b(?! sweet)
+TRIGO;Trigo;Grãos;"Triticum aestivum" OR wheat;trigo|triticum|wheat
+ARROZ;Arroz;Grãos;"Oryza sativa" OR rice;arroz|oryza sativa|\brice\b
+CAFE_ARABICA;Café arábica;Café;"Coffea arabica" OR "arabica coffee";coffea arabica|café arábica|cafe arabica|arabica coffee|cafeeiro|cafeicultura
+CAFE_ROBUSTA;Café conilon;Café;"Coffea canephora" OR "robusta coffee" OR conilon;coffea canephora|conilon|robusta coffee|café robusta
+CANA;Cana-de-açúcar (açúcar e etanol);Açúcar e etanol;"Saccharum officinarum" OR sugarcane;cana[ -]de[ -]açúcar|canavial|saccharum|sugarcane|sugar cane
+BOI;Bovinos de corte (boi e bezerro);Pecuária;"beef cattle" OR "Nellore cattle";bovinos de corte|gado de corte|boi gordo|bezerro|novilho|nelore|beef cattle|nellore|feedlot|confinamento
+FRANGO;Frango;Pecuária;broiler OR "broiler chickens";frango de corte|frangos|broiler
+SUINO;Suínos;Pecuária;swine OR pigs OR "growing-finishing pigs";suínos|suinocultura|leitões|swine|\bpigs?\b|piglets
+LEITE;Leite;Pecuária;"dairy cows" OR "milk production";vacas leiteiras|gado de leite|produção de leite|pecuária leiteira|dairy cows?|milk yield|milk production
+FERTILIZANTES;Fertilizantes (ureia, potássio, fósforo);Petróleo e fertilizantes;"fertilizer" AND (urea OR "potassium chloride" OR phosphate) AND (Brazil OR tropical);ureia|cloreto de potássio|fosfato|superfosfato|fertilizante|adubação nitrogenada|adubação fosfatada|adubação potássica|urea|potassium chloride|phosphate fertili

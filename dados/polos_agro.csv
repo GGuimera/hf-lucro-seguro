@@ -1,0 +1,17 @@
+polo;nome;municipio_ref;uf;lat;lon;altitude_m;regiao_calendario;culturas_conhecidas;municipios
+SORRISO;Médio-Norte de MT (Sorriso / Lucas do Rio Verde);Sorriso;MT;-12.545;-55.711;365;;SOJA|MILHO|BOI;
+RIO_VERDE;Sudoeste de Goiás (Rio Verde / Jataí);Rio Verde;GO;-17.792;-50.919;748;;SOJA|MILHO;
+CASCAVEL;Oeste do Paraná (Cascavel / Toledo);Cascavel;PR;-24.956;-53.455;781;;SOJA|MILHO|TRIGO|FRANGO|SUINO;
+DOURADOS;Sul de MS (Dourados / Maracaju);Dourados;MS;-22.221;-54.806;430;;SOJA|MILHO;
+PASSO_FUNDO;Planalto Gaúcho (Passo Fundo / Cruz Alta);Passo Fundo;RS;-28.262;-52.407;687;;SOJA|MILHO|TRIGO;
+LEM;Oeste da Bahia (Luís Eduardo Magalhães / Barreiras);Luís Eduardo Magalhães;BA;-12.096;-45.786;769;;SOJA;
+BALSAS;Sul do Maranhão (Balsas, MATOPIBA);Balsas;MA;-7.532;-46.035;283;;SOJA;
+URUGUAIANA;Fronteira Oeste do RS (Uruguaiana, arroz irrigado);Uruguaiana;RS;-29.755;-57.088;66;;ARROZ;
+CERRADO_MINEIRO;Cerrado Mineiro (Patrocínio / Araguari);Patrocínio;MG;-18.944;-46.993;965;;CAFE_ARABICA;
+SUL_MINAS_CAFE;Sul de Minas cafeeiro (Varginha / Três Pontas);Varginha;MG;-21.551;-45.430;980;;CAFE_ARABICA|LEITE;
+LINHARES;Norte do Espírito Santo (Linhares / São Mateus);Linhares;ES;-19.391;-40.072;33;;CAFE_ROBUSTA;
+CACOAL;Rondônia (Cacoal, conilon);Cacoal;RO;-11.438;-61.447;200;;CAFE_ROBUSTA;
+RIBEIRAO_PRETO;Nordeste paulista (Ribeirão Preto, cana);Ribeirão Preto;SP;-21.178;-47.810;546;;ACUCAR|ETANOL;
+CAMPO_GRANDE;Centro de MS (Campo Grande, pecuária);Campo Grande;MS;-20.469;-54.620;592;;BOI|BEZERRO;
+MARABA;Sudeste do Pará (Marabá, pecuária);Marabá;PA;-5.369;-49.117;84;;BOI;
+PATOS_MINAS;Alto Paranaíba leiteiro (Patos de Minas);Patos de Minas;MG;-18.579;-46.518;832;;LEITE;

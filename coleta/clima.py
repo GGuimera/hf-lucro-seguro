@@ -85,6 +85,9 @@ def previsao(p):
 
 def main():
     polos = pd.read_csv(POLOS, sep=";")
+    agro = PASTA / "dados" / "polos_agro.csv"  # regiões produtoras das commodities (soja, café, boi...)
+    if agro.exists():
+        polos = pd.concat([polos, pd.read_csv(agro, sep=";")], ignore_index=True)
     con = sqlite3.connect(BANCO)
     try:
         con.execute("CREATE TABLE IF NOT EXISTS clima_diario (polo TEXT, data TEXT, tmax REAL, tmin REAL, chuva REAL, et0 REAL)")

@@ -1,0 +1,14 @@
+produto;geada_tmin;calor_tmax;chuva_dia;chuva_3dias;fonte
+SOJA;2;35;80;150;Geada e calor acima de ~35 °C no florescimento derrubam vagens (Embrapa Soja) / chuva forte na colheita: estimativa inicial
+MILHO;2;35;80;150;Geada na safrinha do Sul e do MS / calor acima de ~35 °C no pendoamento (Embrapa Milho e Sorgo) / chuva: estimativa inicial
+TRIGO;-1;30;60;120;Geada no espigamento / calor acima de ~30 °C no enchimento do grão / chuva na colheita faz o grão germinar na espiga (Embrapa Trigo) / estimativa inicial
+ARROZ;3;35;80;150;Frio na floração causa espigas vazias / geada: Embrapa Clima Temperado / estimativa inicial
+CAFE_ARABICA;3;34;80;150;Café arábica é muito sensível a geada (ex.: julho de 2021) / calor acima de ~34 °C na florada abortiva (Embrapa Café / Procafé) / estimativa inicial
+CAFE_ROBUSTA;5;36;80;150;Conilon tolera calor mas sofre com frio e com seca na florada (Incaper) / estimativa inicial
+ACUCAR;1;38;100;200;Cana: geada queima a palha e reduz açúcar / seca e calor reduzem moagem (Embrapa / Unica) / estimativa inicial
+ETANOL;1;38;100;200;Mesmos limites da cana (açúcar) / estimativa inicial
+BOI;0;35;100;200;Geada e seca prejudicam o pasto / calor forte reduz ganho de peso / estimativa inicial
+BEZERRO;0;35;100;200;Mesmos limites do boi / estimativa inicial
+FRANGO;0;35;100;200;Calor forte aumenta mortalidade nos galpões / estimativa inicial
+SUINO;0;35;100;200;Calor forte reduz ganho de peso / estimativa inicial
+LEITE;0;32;100;200;Vaca leiteira sofre estresse de calor acima de ~32 °C / seca e geada reduzem o pasto (Embrapa Gado de Leite) / estimativa inicial
