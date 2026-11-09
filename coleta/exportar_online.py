@@ -12,7 +12,7 @@ import pandas as pd
 PASTA = Path(__file__).resolve().parent.parent
 BANCO = PASTA / "dados" / "precos.db"
 SAIDA = PASTA / "online"
-PUBLICAS = ["precos", "ceagesp", "preco_produtor", "oferta_mensal"]  # planilha_bh fica de fora (dado do usuário)
+PUBLICAS = ["precos", "ceagesp", "preco_produtor", "oferta_mensal", "clima_diario"]  # planilha_bh fica de fora (dado do usuário)
 
 
 def main():

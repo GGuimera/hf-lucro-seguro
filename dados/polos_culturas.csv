@@ -1,0 +1,52 @@
+polo;produto;participacao;fonte
+CHAPADA;ALHO;0.0303;IBGE PAM tabela 1612, média 2022-2024
+CRISTALINA;ALHO;0.3115;IBGE PAM tabela 1612, média 2022-2024
+PERDIZES;ALHO;0.0827;IBGE PAM tabela 1612, média 2022-2024
+SAO_GOTARDO;ALHO;0.3427;IBGE PAM tabela 1612, média 2022-2024
+CASA_BRANCA;BATATA;0.0524;IBGE PAM tabela 1612, média 2022-2024
+CHAPADA;BATATA;0.1059;IBGE PAM tabela 1612, média 2022-2024
+CRISTALINA;BATATA;0.0444;IBGE PAM tabela 1612, média 2022-2024
+GUARAPUAVA;BATATA;0.1163;IBGE PAM tabela 1612, média 2022-2024
+ITAPEVA;BATATA;0.0507;IBGE PAM tabela 1612, média 2022-2024
+PERDIZES;BATATA;0.1705;IBGE PAM tabela 1612, média 2022-2024
+SAO_GOTARDO;BATATA;0.0302;IBGE PAM tabela 1612, média 2022-2024
+SUL_MINAS;BATATA;0.0462;IBGE PAM tabela 1612, média 2022-2024
+ITAPEVA;BATATA DOCE;0.0064;IBGE PAM tabela 1612, média 2022-2024
+SAO_GOTARDO;BATATA DOCE;0.0095;IBGE PAM tabela 1612, média 2022-2024
+CASA_BRANCA;CEBOLA;0.0366;IBGE PAM tabela 1612, média 2022-2024
+CHAPADA;CEBOLA;0.0244;IBGE PAM tabela 1612, média 2022-2024
+CRISTALINA;CEBOLA;0.1022;IBGE PAM tabela 1612, média 2022-2024
+GUARAPUAVA;CEBOLA;0.0357;IBGE PAM tabela 1612, média 2022-2024
+IRECE;CEBOLA;0.0784;IBGE PAM tabela 1612, média 2022-2024
+ITAPEVA;CEBOLA;0.0104;IBGE PAM tabela 1612, média 2022-2024
+ITUPORANGA;CEBOLA;0.2172;IBGE PAM tabela 1612, média 2022-2024
+MOGI;CEBOLA;0.0168;IBGE PAM tabela 1612, média 2022-2024
+MONTE_ALTO;CEBOLA;0.0305;IBGE PAM tabela 1612, média 2022-2024
+PERDIZES;CEBOLA;0.0689;IBGE PAM tabela 1612, média 2022-2024
+PETROLINA;CEBOLA;0.0368;IBGE PAM tabela 1612, média 2022-2024
+SAO_GOTARDO;CEBOLA;0.0295;IBGE PAM tabela 1612, média 2022-2024
+CHAPADA;TOMATE;0.0409;IBGE PAM tabela 1612, média 2022-2024
+CRISTALINA;TOMATE;0.1025;IBGE PAM tabela 1612, média 2022-2024
+IRECE;TOMATE;0.0093;IBGE PAM tabela 1612, média 2022-2024
+ITAPEVA;TOMATE;0.0855;IBGE PAM tabela 1612, média 2022-2024
+SERRA_RJ;TOMATE;0.0166;IBGE PAM tabela 1612, média 2022-2024
+SILVANIA;TOMATE;0.1157;IBGE PAM tabela 1612, média 2022-2024
+ITAPEVA;MELANCIA;0.0071;IBGE PAM tabela 1612, média 2022-2024
+PETROLINA;MELANCIA;0.022;IBGE PAM tabela 1612, média 2022-2024
+SAO_GOTARDO;CENOURA;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SAO_GOTARDO;BETERRABA;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+CRISTALINA;CENOURA;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+IRECE;CENOURA;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+IRECE;BETERRABA;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SUL_MINAS;MORANGO;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SERRA_RJ;ALFACE;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SERRA_RJ;COUVE;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SERRA_RJ;COUVE-FLOR;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SERRA_RJ;BROCOLO;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SERRA_RJ;REPOLHO;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+SERRA_RJ;CENOURA;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+MOGI;ALFACE;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+MOGI;COUVE;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+MOGI;COUVE-FLOR;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+MOGI;BROCOLO;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"
+MOGI;REPOLHO;;"Polo conhecido; o IBGE não mede esta cultura por município (a confirmar)"

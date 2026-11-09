@@ -11,6 +11,7 @@ pagina = st.navigation([
     st.Page("app.py", title="Preços", icon="📊", default=True),
     st.Page("plantar.py", title="O que plantar agora", icon="🌱"),
     st.Page("analise.py", title="Análise por cultura (modelo preditivo)", icon="🔬"),
+    st.Page("clima.py", title="Clima e alertas nos polos", icon="🌦️"),
     st.Page("noticias.py", title="Notícias × preços", icon="📰"),
     st.Page("confiabilidade.py", title="Dá para confiar? (provas e fontes)", icon="✅"),
 ])
