@@ -11,11 +11,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-BANCO = Path(__file__).resolve().parent.parent / "dados" / "precos.db"
-
 import sys
 sys.path.append(str(Path(__file__).resolve().parent))
-from modelo import BRASIL, media_brasil
+from modelo import BANCO, BRASIL, media_brasil  # BANCO: banco local ou, online, o montado dos dados públicos
 
 # Cores (paleta validada para fundo escuro e daltonismo) — uma cor fixa por ano
 CORES_ANOS = {2019: "#008300", 2020: "#9085e9", 2021: "#e66767",

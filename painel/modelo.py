@@ -13,7 +13,9 @@ Como funciona, em linguagem simples:
 5. Preço ao produtor = preço na Ceasa × (1 − diferença). Lucro = preço ao produtor × produção vendável − custo.
 """
 import math
+import os
 import sqlite3
+import tempfile
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -24,7 +26,33 @@ import streamlit as st
 NOME_MODELO = "Modelo Preditivo Sazonal"
 VERSAO = "2"
 PASTA = Path(__file__).resolve().parent.parent
-BANCO = PASTA / "dados" / "precos.db"
+BANCO_LOCAL = PASTA / "dados" / "precos.db"
+PASTA_ONLINE = PASTA / "online"
+
+
+def _banco_online():
+    """Versão online: monta um banco temporário a partir dos .parquet públicos (sem a planilha própria)."""
+    destino = Path(tempfile.gettempdir()) / "precoseguro_online.db"
+    pqs = sorted(PASTA_ONLINE.glob("*.parquet"))
+    if destino.exists() and all(p.stat().st_mtime <= destino.stat().st_mtime for p in pqs):
+        return destino
+    provisorio = destino.with_suffix(f".{os.getpid()}.tmp")
+    con = sqlite3.connect(provisorio)
+    try:
+        for p in pqs:
+            pd.read_parquet(p).to_sql(p.stem, con, index=False, if_exists="replace")
+        if any(p.stem == "precos" for p in pqs):
+            con.execute("CREATE INDEX IF NOT EXISTS idx_prod ON precos (produto, ceasa, data)")
+        con.commit()
+    finally:
+        con.close()  # no Windows, "with" não fecha o arquivo
+    os.replace(provisorio, destino)
+    return destino
+
+
+# Modo online: quando não há banco local (servidor na internet) ou quando PRECO_SEGURO_ONLINE=1 (teste).
+ONLINE = os.environ.get("PRECO_SEGURO_ONLINE") == "1" or not BANCO_LOCAL.exists()
+BANCO = _banco_online() if ONLINE and PASTA_ONLINE.exists() else BANCO_LOCAL
 CULTURAS = PASTA / "dados" / "culturas.csv"
 CUSTOS = PASTA / "dados" / "custos.csv"
 PERDAS = PASTA / "dados" / "perdas.csv"

@@ -11,4 +11,5 @@ gatherUsageStats = false
 
 [server]
 headless = true
-address = "localhost"
+# A trava "só este computador" (address = localhost) fica no abrir_painel.bat,
+# porque este arquivo também é usado pelo servidor na internet.
