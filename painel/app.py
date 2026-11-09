@@ -13,7 +13,7 @@ import streamlit as st
 
 import sys
 sys.path.append(str(Path(__file__).resolve().parent))
-from modelo import BANCO, BRASIL, media_brasil  # BANCO: banco local ou, online, o montado dos dados públicos
+from modelo import BANCO, BRASIL, ceagesp_diario, media_brasil  # BANCO: banco local ou, online, o montado dos dados públicos
 
 # Cores (paleta validada para fundo escuro e daltonismo) — uma cor fixa por ano
 CORES_ANOS = {2019: "#008300", 2020: "#9085e9", 2021: "#e66767",
@@ -65,6 +65,28 @@ def ceasas_por_dia(produto):
         total = pd.read_sql("SELECT COUNT(DISTINCT ceasa) FROM precos WHERE produto = ?", con, params=(produto,)).iloc[0, 0]
     b = b[b["produto"] == produto]
     return (b["n_ceasas"].mean() if len(b) else 0), int(total)
+
+
+@st.cache_data
+def mensal_extra(produto, ceasa):
+    """Médias mensais de fontes mais novas (R$/kg), uma por mês: CeasaMinas > boletins Ceagesp > boletim Conab."""
+    partes = []
+    with sqlite3.connect(BANCO) as con:
+        if con.execute("SELECT name FROM sqlite_master WHERE name='precos_mensal'").fetchone():
+            pm = pd.read_sql("SELECT mes, preco, fonte FROM precos_mensal WHERE produto = ? AND ceasa = ?", con,
+                             params=(produto, ceasa))
+            partes.append(pm.assign(ordem=pm["fonte"].str.startswith("Conab") * 2))
+        if ceasa == "CEAGESP - SAO PAULO":
+            cg = ceagesp_diario(con)
+            cg = cg[cg["produto"] == produto] if len(cg) else cg
+            if len(cg):
+                partes.append(cg.assign(mes=cg["data"].str[:7]).groupby("mes", as_index=False)["preco"].mean()
+                              .assign(fonte="boletins da Ceagesp", ordem=1))
+    if not partes:
+        return pd.DataFrame(columns=["ano", "mes", "preco", "fonte"])
+    d = pd.concat(partes).sort_values("ordem").drop_duplicates("mes")
+    return pd.DataFrame({"ano": d["mes"].str[:4].astype(int), "mes": d["mes"].str[5:7].astype(int),
+                         "preco": d["preco"], "fonte": d["fonte"]})
 
 
 def brl(v):
@@ -164,8 +186,8 @@ st.markdown(
     "Linhas que sobem nos mesmos meses mostram um padrão de época (sazonalidade).</p>",
     unsafe_allow_html=True,
 )
-mensal = dados.groupby(["ano", "mes"], as_index=False)["preco"].mean()
-mensal = mensal[mensal.groupby("ano")["mes"].transform("count") >= 2]  # ignora anos com só 1 mês
+mensal = dados.groupby(["ano", "mes"], as_index=False).agg(preco=("preco", "mean"), n=("preco", "size"))
+mensal = mensal[mensal["n"] >= 5][["ano", "mes", "preco"]]  # mês com menos de 5 dias de preço não é média confiável
 fonte_anos = "Conab / Prohort (preço mais comum do dia, média do mês)"
 if ceasa == "CEASAMINAS - BELO HORIZONTE":
     with sqlite3.connect(BANCO) as con:
@@ -183,11 +205,22 @@ if ceasa == "CEASAMINAS - BELO HORIZONTE":
         pl["ano"], pl["mes"] = pl["mes"].str[:4].astype(int), pl["mes"].str[5:].astype(int)
         mensal = pl[["ano", "mes", "preco"]]
         fonte_anos = "sua planilha de séries históricas de BH (2017 em diante)"
+if dados["unidade"].iloc[0] == "KG":  # as fontes mensais novas são em R$/kg
+    extra = mensal_extra(produto, ceasa)
+    ult = (mensal["ano"] * 100 + mensal["mes"]).max() if len(mensal) else 0
+    extra = extra[extra["ano"] * 100 + extra["mes"] > ult]  # só os meses depois do último que já existe
+    if len(extra):
+        mensal = pd.concat([mensal, extra[["ano", "mes", "preco"]]], ignore_index=True)
+        p = extra.sort_values(["ano", "mes"]).iloc[0]
+        fonte_anos += f"; a partir de {MESES[p['mes'] - 1].lower()}/{p['ano']}: " + " e ".join(dict.fromkeys(extra["fonte"]))
+ano_atual = pd.Timestamp.today().year
+mensal = mensal[(mensal.groupby("ano")["mes"].transform("count") >= 2) | (mensal["ano"] == ano_atual)]  # ano em curso entra mesmo com 1 mês
 fig = go.Figure()
-for ano, g in mensal.groupby("ano"):
+for ano, g in mensal.sort_values(["ano", "mes"]).groupby("ano"):
     cor, traco = CINZAS_ANOS.get(ano, (CORES_ANOS.get(ano, "#9085e9"), "solid"))
+    nome = f"{ano} (parcial, até {MESES[g['mes'].max() - 1].lower()})" if ano == ano_atual and len(g) < 12 else str(ano)
     fig.add_trace(go.Scatter(
-        x=[MESES[m - 1] for m in g["mes"]], y=g["preco"], name=str(ano), mode="lines+markers",
+        x=[MESES[m - 1] for m in g["mes"]], y=g["preco"], name=nome, mode="lines+markers",
         line=dict(color=cor, width=2.5, dash=traco),
         marker=dict(size=8, line=dict(color=FUNDO, width=2)),
         hovertemplate=f"{ano}: R$ %{{y:.2f}}<extra></extra>",

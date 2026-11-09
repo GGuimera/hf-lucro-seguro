@@ -178,8 +178,11 @@ st.markdown(
     unsafe_allow_html=True)
 
 # ---------- 4. Teste justo ----------
-st.subheader("4. Vale mudar o mês de vender (ou de comprar)?")
-if tipo == "referencia":
+if not M.ONLINE:  # no site público as estratégias (metodologia de previsão) ficam escondidas
+    st.subheader("4. Vale mudar o mês de vender (ou de comprar)?")
+if M.ONLINE:
+    pass
+elif tipo == "referencia":
     st.info("Este é um preço de referência mundial (ou matéria-prima) que o produtor não compra nem vende diretamente. "
             "Serve para entender o mercado: veja a época acima e a relação de troca abaixo.")
 else:
@@ -331,7 +334,8 @@ else:
                    (lp["fonte"] if lp is not None else "—") + ".")
 
 # ---------- 7. Clima x preço ----------
-st.subheader("7. O clima nessas regiões explica o preço? (prova)")
+if not M.ONLINE:
+    st.subheader("7. O clima nessas regiões explica o preço? (prova)")
 
 
 @st.cache_data(ttl=6 * 3600, show_spinner="Testando clima × preço em todas as commodities...")
@@ -349,8 +353,10 @@ def prova_todas(mensal, lista):
     return t
 
 
-tudo = prova_todas(mensal, lista)
-if tudo.empty:
+tudo = None if M.ONLINE else prova_todas(mensal, lista)
+if M.ONLINE:
+    pass
+elif tudo.empty:
     st.info("A prova aparece quando o histórico de clima das regiões do agro estiver baixado (coleta\\clima.py).")
 else:
     n_t, n_p, n_q = len(tudo), int((tudo["p"] < 0.05).sum()), int((tudo["q"] < 0.10).sum())

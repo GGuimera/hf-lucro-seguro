@@ -102,7 +102,12 @@ def main(inicio, fim):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        sys.exit("Uso: ceagesp.py AAAA-MM-DD AAAA-MM-DD")
-    a, b = (datetime.strptime(x, "%Y-%m-%d").date() for x in sys.argv[1:])
+    if len(sys.argv) == 3:
+        a, b = (datetime.strptime(x, "%Y-%m-%d").date() for x in sys.argv[1:])
+    elif len(sys.argv) == 1:  # rotina diária: do último boletim gravado até hoje
+        with sqlite3.connect(BANCO) as c:
+            ult = c.execute("SELECT MAX(data) FROM ceagesp").fetchone()[0]
+        a, b = (date.fromisoformat(ult) if ult else date(date.today().year, 1, 1)), date.today()
+    else:
+        sys.exit("Uso: ceagesp.py [AAAA-MM-DD AAAA-MM-DD]")
     main(a, b)

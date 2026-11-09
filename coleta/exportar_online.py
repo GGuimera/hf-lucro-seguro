@@ -17,7 +17,7 @@ import pandas as pd
 PASTA = Path(__file__).resolve().parent.parent
 BANCO = PASTA / "dados" / "precos.db"
 SAIDA = PASTA / "online"
-PUBLICAS = ["precos", "ceagesp", "preco_produtor", "oferta_mensal", "clima_diario"]
+PUBLICAS = ["precos", "ceagesp", "preco_produtor", "oferta_mensal", "clima_diario", "precos_mensal"]
 
 
 def planilha_so_desenho(con):

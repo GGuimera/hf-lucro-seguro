@@ -152,16 +152,17 @@ for col, p in zip(cols, e["produtos"]):
         fig.update_yaxes(gridcolor=GRADE, tickprefix="R$ ", tickfont=dict(color=TEXTO_2))
         st.plotly_chart(fig, width="stretch")
 
-with st.expander("ℹ️ Como o número de cada quadro é calculado"):
-    st.markdown(
-        """
+if not M.ONLINE:  # metodologia: só no computador, não no site público
+    with st.expander("ℹ️ Como o número de cada quadro é calculado"):
+        st.markdown(
+            """
 1. Pegamos o preço mês a mês da cultura (sua planilha de BH nos anos antigos, a Conab de 2022 a 2025 e os boletins da Ceagesp em 2026).
 2. Tiramos o **efeito da época** — se a cenoura sempre sobe em março, essa alta normal não conta.
 3. Comparamos os **2 meses depois do evento** com a **média dos 3 meses antes**. O quadro mostra a maior variação nesses 2 meses.
 4. Para saber se foi algo especial, contamos em quantos meses do histórico houve uma variação desse tamanho:
    até 10% dos meses = **fora do comum**; mais de 30% = **comum** (pode ser só o sobe-e-desce normal).
 """
-    )
+        )
 st.markdown(
     '<div class="aviso">⚠️ <b>Correlação não é causa.</b> O número mostra o que aconteceu com o preço <b>depois</b> do evento. '
     "Outros fatores podem ter agido ao mesmo tempo (ex.: em março/2022, chuva em São Gotardo e guerra na Ucrânia juntas). "
