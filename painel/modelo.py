@@ -206,9 +206,10 @@ def modelo_produto(_mensal, _pl, produto):
                 juntos = pd.concat([base.dropna(), bh[novos] / k]).sort_index()
                 base = _continua(juntos)
         ok = base.dropna()
-        fonte = f"Sua planilha de {sigla} ({ok.index.min().year}–{ok.index.max().year})"
+        quem = "Planilha de produtor (só o desenho, sem R$)" if "relativo" in p.columns else "Sua planilha"
+        fonte = f"{quem} de {sigla} ({ok.index.min().year}–{ok.index.max().year})"
         if ok.index.max().year > p["periodo"].max().year:
-            fonte = (f"Sua planilha de {sigla} ({ok.index.min().year}–{p['periodo'].max().year}) "
+            fonte = (f"{quem} de {sigla} ({ok.index.min().year}–{p['periodo'].max().year}) "
                      f"+ Conab {sigla} até {ok.index.max().year}")
         series[fonte] = base
     else:

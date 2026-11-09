@@ -171,7 +171,9 @@ if ceasa == "CEASAMINAS - BELO HORIZONTE":
     with sqlite3.connect(BANCO) as con:
         tem_pl = con.execute("SELECT name FROM sqlite_master WHERE name='planilha_bh'").fetchone()
         cols = [r[1] for r in con.execute("PRAGMA table_info(planilha_bh)")] if tem_pl else []
-        if tem_pl and "ceasa" in cols:
+        if "relativo" in cols:  # versão online: a planilha está só como desenho (sem R$), então o gráfico usa a Conab
+            pl = pd.DataFrame()
+        elif tem_pl and "ceasa" in cols:
             pl = pd.read_sql("SELECT mes, preco FROM planilha_bh WHERE produto = ? AND ceasa = ?", con, params=(produto, ceasa))
         elif tem_pl:
             pl = pd.read_sql("SELECT mes, preco FROM planilha_bh WHERE produto = ?", con, params=(produto,))

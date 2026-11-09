@@ -10,7 +10,7 @@ BETERRABA;Beterraba;60;70;20;20;111111111111;111111111111;011111110000;Embrapa H
 BROCOLO;Brócolis;90;95;30;30;011111100000;111111111111;011111000000;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): verão 80-100 d, inverno 90-100 d (meio de cada faixa)
 CARA;Cará;240;240;60;60;000000011100;000000011100;000000011100;Ciclo único (cultura de época definida): estimativa inicial do sistema
 CEBOLA;Cebola;170;170;30;30;011110000000;001110000000;001110000000;Ciclo único (cultura de época definida): estimativa inicial do sistema
-CENOURA;Cenoura;120;135;20;30;111111111111;111111111111;011111100111;Produtor de São Gotardo: maturação 120 d no verão e 130-140 d no inverno + 10-30 d de colheita (Embrapa, hortas: 85-100 verão / 90-110 inverno)
+CENOURA;Cenoura;120;140;20;30;111111111111;111111111111;011111100111;Produtor de São Gotardo: colheita nunca antes de 120 d no verão e 140 d no inverno, + 10-30 d de colheita (Embrapa, hortas: 85-100 verão / 90-110 inverno)
 CHUCHU;Chuchu;110;110;150;150;000000011110;000000011110;000000011110;Ciclo único (cultura de época definida): estimativa inicial do sistema
 COUVE;Couve;80;90;120;120;111111111111;111111111111;111111111111;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): 80-90 d até a 1ª colheita (ponta curta no verão, longa no inverno)
 COUVE-FLOR;Couve-flor;95;105;20;20;011111100000;111111111111;011111000000;Embrapa Hortaliças/Sebrae (Tabela de plantio de hortaliças): verão 90-100 d, inverno 100-110 d (meio de cada faixa)
