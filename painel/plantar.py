@@ -194,10 +194,13 @@ if len(custos):
                 lambda v: "—" if pd.isna(v) else f"+{v:.0f}%"),
             "Faixa nas fontes (R$/ha)": [f"{brl(a, 0)} a {brl(b, 0)}" for a, b in zip(custos["custo_ha_min"], custos["custo_ha_max"])],
             "Produtividade (t/ha)": custos["produtividade_t_ha"],
+            "Qualidade do número": custos["qualidade"] if "qualidade" in custos.columns else "—",
             "Fontes": custos["fonte"],
         })
         st.dataframe(tc, hide_index=True, width="stretch")
-        st.caption("Para mudar um custo ou a produtividade, edite o arquivo dados\\custos.csv.")
+        st.caption("Qualidade: A = fonte oficial ou do produtor, recente · B = fonte antiga corrigida pela inflação · "
+                   "C = estimativa (custo por kg × produtividade), confira com a sua realidade. Culturas fora da tabela não "
+                   "têm custo público confiável: o sistema mostra só a análise de preço. Para mudar, edite dados\\custos.csv.")
 
 n_baixa = int((res["conf"] == "Baixa").sum())
 st.markdown(
