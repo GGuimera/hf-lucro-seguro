@@ -207,12 +207,16 @@ if ceasa == "CEASAMINAS - BELO HORIZONTE":
         fonte_anos = "sua planilha de séries históricas de BH (2017 em diante)"
 if dados["unidade"].iloc[0] == "KG":  # as fontes mensais novas são em R$/kg
     extra = mensal_extra(produto, ceasa)
+    cm = extra[extra["fonte"].str.startswith("CeasaMinas")]
+    if len(cm) and fonte_anos.startswith("Conab"):  # Conab mede outro preço: a CeasaMinas vale para todos os anos que ela cobre
+        mensal = mensal[mensal["ano"] < cm["ano"].min()]
     ult = (mensal["ano"] * 100 + mensal["mes"]).max() if len(mensal) else 0
     extra = extra[extra["ano"] * 100 + extra["mes"] > ult]  # só os meses depois do último que já existe
     if len(extra):
-        mensal = pd.concat([mensal, extra[["ano", "mes", "preco"]]], ignore_index=True)
+        novas = " e ".join(dict.fromkeys(extra["fonte"]))
         p = extra.sort_values(["ano", "mes"]).iloc[0]
-        fonte_anos += f"; a partir de {MESES[p['mes'] - 1].lower()}/{p['ano']}: " + " e ".join(dict.fromkeys(extra["fonte"]))
+        fonte_anos = f"{fonte_anos}; a partir de {MESES[p['mes'] - 1].lower()}/{p['ano']}: {novas}" if len(mensal) else novas
+        mensal = pd.concat([mensal, extra[["ano", "mes", "preco"]]], ignore_index=True)
 ano_atual = pd.Timestamp.today().year
 mensal = mensal[(mensal.groupby("ano")["mes"].transform("count") >= 2) | (mensal["ano"] == ano_atual)]  # ano em curso entra mesmo com 1 mês
 fig = go.Figure()

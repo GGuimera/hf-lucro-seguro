@@ -235,7 +235,8 @@ def main():
             registrar(f"ERRO diesel: {type(e).__name__}: {str(e)[:200]}")
 
         tudo = pd.concat(mensal, ignore_index=True)[["produto", "mes", "valor", "unidade", "fonte"]]
-        con.execute("DELETE FROM agro_mensal")
+        prods = list(tudo["produto"].unique())  # só o que chegou hoje: fonte fora do ar mantém os dados antigos
+        con.execute(f"DELETE FROM agro_mensal WHERE produto IN ({','.join('?' * len(prods))})", prods)
         tudo.to_sql("agro_mensal", con, if_exists="append", index=False)
         con.commit()
         registrar(f"agro_mensal: {len(tudo):,} linhas, {tudo['produto'].nunique()} séries")
@@ -247,6 +248,9 @@ def main():
     if "--custos" in sys.argv or not CUSTOS.exists() or (time.time() - CUSTOS.stat().st_mtime) > 30 * 86400:
         c = custos_conab(lista)
         if not c.empty:
+            if CUSTOS.exists():  # cultura que falhou hoje fica com o custo anterior
+                velho = pd.read_csv(CUSTOS, sep=";")
+                c = pd.concat([c, velho[~velho["produto"].isin(c["produto"])]], ignore_index=True)
             c.to_csv(CUSTOS, sep=";", index=False, encoding="utf-8")
             registrar(f"custos Conab gravados: {len(c)} culturas")
     registrar(f"commodities: fim, {erros} erros")
