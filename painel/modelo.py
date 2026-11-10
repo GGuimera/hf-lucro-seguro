@@ -119,7 +119,7 @@ def media_brasil(con):
     return b[b["n_ceasas"] >= MIN_CEASAS_BRASIL]
 
 
-@st.cache_data(show_spinner="Carregando preços…")
+@st.cache_data(ttl=6 * 3600, show_spinner="Carregando preços…")
 def carregar():
     """df: preços diários de MG/RJ/SP + média Brasil (para mostrar). mensal: mediana mensal de TODAS as Ceasas."""
     with sqlite3.connect(BANCO) as con:
@@ -184,7 +184,7 @@ def serie_local(mensal, produto, ceasa):
     return _continua(d[d["unidade"] == un].set_index("periodo")["preco"]), un
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=6 * 3600, show_spinner=False)
 def modelo_produto(_mensal, _pl, produto):
     """Monta a base, o índice sazonal, os cenários (Q = preço ÷ tendência) e a confiança de um produto.
     (O _ na frente faz o Streamlit guardar o resultado só pelo produto, sem reler as tabelas inteiras a cada vez.)"""
@@ -483,6 +483,25 @@ def intervalo_bootstrap(x, vezes=2000, nivel=0.90, semente=42):
     medias = rng.choice(x, size=(vezes, len(x)), replace=True).mean(axis=1)
     a = (1 - nivel) / 2
     return float(np.quantile(medias, a)), float(np.quantile(medias, 1 - a))
+
+
+def resumo_teste(dif):
+    """Veredito do teste justo (A × B) a partir da diferença ano a ano (positivo = B melhor). Usado no HF e no agro."""
+    n, k = len(dif), int((dif > 0).sum())
+    lo, hi = intervalo_bootstrap(dif.values)
+    # teste dos dois lados: chance de QUALQUER uma das estratégias ganhar tantos anos por acaso
+    p = min(1.0, 2 * chance_acaso(max(k, n - k), n)) if n else float("nan")
+    if n < 5:
+        v = "Inconclusivo: poucos anos de histórico"
+    elif lo > 0:
+        v = "B é melhor — diferença consistente"
+    elif hi < 0:
+        v = "A é melhor — diferença consistente"
+    else:
+        v = "Sem diferença clara entre A e B"
+    return {"n": n, "k": k, "lo": lo, "hi": hi, "p": p, "veredito": v,
+            "sem_ext": dif.drop(index=dif.abs().idxmax()).mean() if n > 2 else float("nan"),
+            "ano_ext": dif.abs().idxmax() if n else None}
 
 
 # Quanto o plantio de cada mês é "de inverno" (0 = verão pleno, 1 = inverno pleno). Transição gradual:

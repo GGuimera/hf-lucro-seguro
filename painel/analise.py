@@ -407,19 +407,9 @@ if len(estr_b) < 3:
     st.warning("São precisos pelo menos 3 anos de histórico para esta comparação.")
 else:
     dif = estr_b - estr_a
-    n_d, k_b = len(dif), int((dif > 0).sum())
-    lo, hi = M.intervalo_bootstrap(dif.values)
-    sem_ext = dif.drop(index=dif.abs().idxmax()).mean()
-    # teste dos dois lados: chance de QUALQUER uma das estratégias ganhar tantos anos por acaso
-    p_acaso = min(1.0, 2 * M.chance_acaso(max(k_b, n_d - k_b), n_d))
-    if n_d < 5:
-        veredito, cor_v = "Inconclusivo: poucos anos de histórico", "#e0b341"
-    elif lo > 0:
-        veredito, cor_v = "B é melhor — diferença consistente", "#4cc38a"
-    elif hi < 0:
-        veredito, cor_v = "A é melhor — diferença consistente", "#4cc38a"
-    else:
-        veredito, cor_v = "Sem diferença clara entre A e B", "#e0b341"
+    r = M.resumo_teste(dif)
+    n_d, k_b, lo, hi, p_acaso, sem_ext, veredito = r["n"], r["k"], r["lo"], r["hi"], r["p"], r["sem_ext"], r["veredito"]
+    cor_v = "#4cc38a" if "consistente" in veredito else "#e0b341"
     st.markdown(f'<p class="dica">Meses escolhidos para B: <b>{", ".join(MESES_LONGO[mm - 1] for mm in escolhidos)}</b>. '
                 f'Veredito: <span class="selo" style="background:{cor_v}22;color:{cor_v}">{veredito}</span></p>',
                 unsafe_allow_html=True)

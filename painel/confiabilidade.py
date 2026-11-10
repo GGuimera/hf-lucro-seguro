@@ -48,7 +48,7 @@ def visual(fig, titulo_y, altura=340, sufixo=""):
     return fig
 
 
-@st.cache_data(show_spinner="Testando o modelo nos anos passados…")
+@st.cache_data(ttl=6 * 3600, show_spinner="Testando o modelo nos anos passados…")
 def prova_passado(_mod, produto, n_top=3, min_treino=3):
     """Para cada ano Y: escolhe os n_top meses mais caros usando SÓ os anos antes de Y; mede o ganho real em Y."""
     linhas = []

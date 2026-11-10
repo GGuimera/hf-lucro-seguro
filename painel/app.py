@@ -45,7 +45,7 @@ st.markdown(
 )
 
 
-@st.cache_data
+@st.cache_data(ttl=6 * 3600)  # o painel aberto pega a coleta do dia
 def carregar():
     with sqlite3.connect(BANCO) as con:
         df = pd.read_sql("SELECT uf, ceasa, produto, unidade, data, preco FROM precos WHERE uf IN ('MG','RJ','SP')", con)
@@ -57,7 +57,7 @@ def carregar():
     return df
 
 
-@st.cache_data
+@st.cache_data(ttl=6 * 3600)  # o painel aberto pega a coleta do dia
 def ceasas_por_dia(produto):
     """Quantas Ceasas entram, em média, na média do Brasil de um produto (por dia)."""
     with sqlite3.connect(BANCO) as con:
@@ -67,7 +67,7 @@ def ceasas_por_dia(produto):
     return (b["n_ceasas"].mean() if len(b) else 0), int(total)
 
 
-@st.cache_data
+@st.cache_data(ttl=6 * 3600)  # o painel aberto pega a coleta do dia
 def mensal_extra(produto, ceasa):
     """Médias mensais de fontes mais novas (R$/kg), uma por mês: CeasaMinas > boletins Ceagesp > boletim Conab."""
     partes = []

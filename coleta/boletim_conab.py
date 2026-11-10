@@ -56,6 +56,8 @@ def ler_tabelas(texto):
         r = re.match(r"^(CEA\S*(?: - |\s)[^\d]+?)\s+((?:(?:[\d.]+,\d{2}|-)\s+(?:-?[\d.]+,\d{2}%|-)\s*)+)$", linha)
         if produtos and r:
             nums = r.group(2).split()[0::2]  # preço, variação, preço, variação...
+            if len(nums) != len(produtos):  # coluna faltando: não dá para saber qual produto é qual
+                continue
             for prod, v in zip(produtos, nums):
                 if v != "-":
                     saida.append((mes, sem_acento(r.group(1)), prod, float(v.replace(".", "").replace(",", "."))))
@@ -68,6 +70,7 @@ _EX = ("Preços médios em agosto de 2026 das principais hortaliças\nProduto Al
        "Média Ponderada 5,06 -14,80% 2,63 -11,60% 3,88 -13,80% 4,05 0,88% 4,03 18,13%")
 assert ler_tabelas(_EX)[3] == ("2026-08", "CEASAMINAS - BELO HORIZONTE", "CENOURA", 3.18), ler_tabelas(_EX)
 assert len(ler_tabelas(_EX)) == 5  # a linha "Média Ponderada" fica de fora
+assert ler_tabelas(_EX.replace("3,55 -16,52% ", "")) == []  # linha com 4 preços para 5 produtos é pulada
 
 
 def pdfs_do_ano(ano):

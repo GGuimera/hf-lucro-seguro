@@ -53,7 +53,7 @@ nomes = dict(zip(cult["produto"], cult["nome"]))
 nomes.update({"ALFACE": "Alface", "BATATA": "Batata", "TOMATE": "Tomate"})
 
 
-@st.cache_data(show_spinner="Medindo o efeito de cada evento nos preços…")
+@st.cache_data(ttl=6 * 3600, show_spinner="Medindo o efeito de cada evento nos preços…")
 def medir(_ev, chave):  # 'chave' muda quando entram eventos novos, e aí a conta é refeita
     linhas = []
     for _, e in _ev.iterrows():

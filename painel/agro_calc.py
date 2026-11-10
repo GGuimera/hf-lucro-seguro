@@ -149,23 +149,6 @@ def teste_justo(s, tipo, meses_a, k, taxa, mes_alvo=None):
     return tab, contagem, todos, rotulo
 
 
-def resumo_teste(dif):
-    n, k = len(dif), int((dif > 0).sum())
-    lo, hi = M.intervalo_bootstrap(dif.values)
-    p = min(1.0, 2 * M.chance_acaso(max(k, n - k), n)) if n else float("nan")
-    if n < 5:
-        v = "Inconclusivo: poucos anos"
-    elif lo > 0:
-        v = "B é melhor — diferença consistente"
-    elif hi < 0:
-        v = "A é melhor — diferença consistente"
-    else:
-        v = "Sem diferença clara entre A e B"
-    return {"n": n, "k": k, "lo": lo, "hi": hi, "p": p, "veredito": v,
-            "sem_ext": dif.drop(index=dif.abs().idxmax()).mean() if n > 2 else float("nan"),
-            "ano_ext": dif.abs().idxmax() if n else None}
-
-
 # ---------- unidades ----------
 def kg_por_unidade(unidade):
     """Quantos kg tem a unidade de preço ou de produtividade (saca 60 kg, saca 50 kg, tonelada)."""

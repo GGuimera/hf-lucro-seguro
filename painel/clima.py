@@ -57,7 +57,7 @@ def visual(fig, titulo_y, altura=360, sufixo=""):
     return fig
 
 
-@st.cache_data
+@st.cache_data(ttl=6 * 3600)  # o painel aberto pega a coleta do dia
 def carregar_polos():
     polos = pd.read_csv(POLOS, sep=";")
     pc = pd.read_csv(POLOS_CULT, sep=";") if POLOS_CULT.exists() else pd.DataFrame(columns=["polo", "produto", "participacao"])
@@ -89,7 +89,7 @@ def previsao(lat, lon, polo):
         return df.assign(data=lambda x: pd.to_datetime(x["data"])), f"foto guardada de {ult}"
 
 
-@st.cache_data(show_spinner="Carregando o histórico de clima…")
+@st.cache_data(ttl=6 * 3600, show_spinner="Carregando o histórico de clima…")
 def historico(polo):
     with sqlite3.connect(M.BANCO) as con:
         if not con.execute("SELECT name FROM sqlite_master WHERE name='clima_diario'").fetchone():

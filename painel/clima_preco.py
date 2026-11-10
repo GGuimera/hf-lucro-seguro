@@ -51,7 +51,7 @@ def p100(v, casas=0):
     return "—" if pd.isna(v) else f"{v * 100:+.{casas}f}%".replace(".", ",").replace("-", "−")
 
 
-@st.cache_data(show_spinner="Rodando a prova em todas as culturas (uns 10 segundos)…")
+@st.cache_data(ttl=6 * 3600, show_spinner="Rodando a prova em todas as culturas (uns 10 segundos)…")
 def rodar_tudo(_mensal, _pl, chave):
     lim = pd.read_csv(C.LIMITES, sep=";").set_index("produto")
     prods = sorted(set(pd.read_csv(C.POLOS_CULT, sep=";")["produto"]))

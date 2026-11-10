@@ -85,7 +85,7 @@ st.markdown(f'<p class="dica">Valores "de hoje" = corrigidos pela inflação (IP
             unsafe_allow_html=True)
 
 # ---------- 1. Panorama ----------
-st.subheader("1. Panorama: todas as commodities")
+st.subheader("Panorama: todas as commodities")
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
@@ -136,7 +136,7 @@ if len(s) < 36:
     st.stop()
 
 # ---------- 2. Preço ----------
-st.subheader(f"2. {nome}: o preço ao longo do tempo")
+st.subheader(f"{nome}: o preço ao longo do tempo")
 d = diario[diario["produto"] == prod].sort_values("data") if not diario.empty else pd.DataFrame()
 k1, k2, k3, k4 = st.columns(4)
 with k1:
@@ -160,7 +160,7 @@ fig = go.Figure(go.Scatter(x=ss.index.to_timestamp(), y=ss.values, mode="lines",
 st.plotly_chart(visual(fig, un + (" (R$ de hoje)" if real else ""), 340, prefixo="R$ "), width="stretch")
 
 # ---------- 3. Época ----------
-st.subheader("3. Em que meses o preço costuma ser melhor")
+st.subheader("Em que meses o preço costuma ser melhor")
 pm, tab_r = A.indices(s)
 forca = pm["mean"].max() - pm["mean"].min()
 fig3 = go.Figure(go.Bar(x=[MESES[m - 1] for m in pm.index], y=(pm["mean"] - 1) * 100,
@@ -179,7 +179,7 @@ st.markdown(
 
 # ---------- 4. Teste justo ----------
 if not M.ONLINE:  # no site público as estratégias (metodologia de previsão) ficam escondidas
-    st.subheader("4. Vale mudar o mês de vender (ou de comprar)?")
+    st.subheader("Vale mudar o mês de vender (ou de comprar)?")
 if M.ONLINE:
     pass
 elif tipo == "referencia":
@@ -207,7 +207,7 @@ else:
     if tab.empty or len(tab) < 3:
         st.warning("Poucos anos completos para o teste.")
     else:
-        r = A.resumo_teste(tab["dif"])
+        r = M.resumo_teste(tab["dif"])
         cor_v = "#4cc38a" if "consistente" in r["veredito"] else "#e0b341"
         st.markdown(f'<p class="dica">Meses escolhidos para B (com todos os anos): <b>{", ".join(rotulo(m) for m in todos)}</b>. '
                     f'Veredito: <span class="selo" style="background:{cor_v}22;color:{cor_v}">{r["veredito"]}</span></p>',
@@ -266,7 +266,7 @@ else:
                         "e não estão aqui.</div>", unsafe_allow_html=True)
 
 # ---------- 5. Relação de troca ----------
-st.subheader("5. Relação de troca: quantas sacas pagam o adubo")
+st.subheader("Relação de troca: quantas sacas pagam o adubo")
 ferts = lista[lista["produto"].isin(["UREIA", "KCL", "DAP", "TSP"])]
 graos = lista[lista["produto"].isin(["SOJA", "MILHO", "CAFE_ARABICA", "CAFE_ROBUSTA", "TRIGO", "ARROZ"])]
 t1, t2 = st.columns(2)
@@ -297,7 +297,7 @@ if len(rel) > 24:
                "convertido em reais, sem frete e impostos até a fazenda — serve para comparar épocas, não como preço de compra.")
 
 # ---------- 6. Clima nos polos ----------
-st.subheader("6. Clima nas regiões produtoras (próximos 16 dias)")
+st.subheader("Clima nas regiões produtoras (próximos 16 dias)")
 polos_df = pd.read_csv(A.POLOS, sep=";")
 lim = A.limites()
 pol = [p for p in it["polos"].split("|") if p]
@@ -335,7 +335,7 @@ else:
 
 # ---------- 7. Clima x preço ----------
 if not M.ONLINE:
-    st.subheader("7. O clima nessas regiões explica o preço? (prova)")
+    st.subheader("O clima nessas regiões explica o preço? (prova)")
 
 
 @st.cache_data(ttl=6 * 3600, show_spinner="Testando clima × preço em todas as commodities...")
