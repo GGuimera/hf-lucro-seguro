@@ -252,7 +252,16 @@ fig2.add_trace(go.Scatter(x=serie.index, y=serie.values, name="Preço do dia", m
                           marker=dict(size=4, color="#6b6a63"), hovertemplate="Dia: R$ %{y:.2f}<extra></extra>"))
 fig2.add_trace(go.Scatter(x=media.index, y=media.values, name="Média de 4 semanas", mode="lines",
                           line=dict(color="#3987e5", width=2.5), hovertemplate="Média: R$ %{y:.2f}<extra></extra>"))
+inicio_diario = dados["data"].min()
+antigo = mensal[(mensal["ano"] * 100 + mensal["mes"]) < inicio_diario.year * 100 + inicio_diario.month]
+if len(antigo):
+    fig2.add_trace(go.Scatter(
+        x=pd.to_datetime(dict(year=antigo["ano"], month=antigo["mes"], day=1)), y=antigo["preco"],
+        name="Média mensal (fonte mais antiga)", mode="lines+markers", line=dict(color="#c98500", width=2),
+        marker=dict(size=5), hovertemplate="Mês: R$ %{y:.2f}<extra></extra>"))
 st.plotly_chart(estilo(fig2, f"R$ por {unidade}"), width="stretch")
+if len(antigo):
+    st.caption(f"Pontos diários a partir de {inicio_diario:%m/%Y}. Antes disso, a média mensal de {fonte_anos}.")
 
 # ---------- Gráfico 3: comparação entre Ceasas ----------
 st.subheader("🏙️ Comparação entre Ceasas")
@@ -274,6 +283,21 @@ EXTRAS = ["#c98500", "#d55181", "#e66767", "#008300"]
 if escolhidas:
     comp = do_produto[do_produto["ceasa"].isin(escolhidas)].copy()
     comp["mes_ref"] = comp["data"].dt.to_period("M").dt.to_timestamp()
+    BH = "CEASAMINAS - BELO HORIZONTE"
+    if BH in escolhidas:
+        ex = mensal_extra(produto, BH)
+        ex = ex[ex["fonte"].str.startswith("CeasaMinas")]
+        antigo_bh = pd.DataFrame({"mes_ref": pd.to_datetime(dict(year=ex["ano"], month=ex["mes"], day=1)), "preco": ex["preco"]})
+        with sqlite3.connect(BANCO) as con:
+            tem_pl = con.execute("SELECT name FROM sqlite_master WHERE name='planilha_bh'").fetchone()
+            pl = pd.read_sql("SELECT mes, preco FROM planilha_bh WHERE produto = ? AND ceasa = ?", con,
+                             params=(produto, BH)) if tem_pl else pd.DataFrame(columns=["mes", "preco"])
+        pl = pd.DataFrame({"mes_ref": pd.to_datetime(pl["mes"] + "-01"), "preco": pl["preco"]})
+        antigo_bh = pd.concat([pl, antigo_bh]).drop_duplicates("mes_ref", keep="first")
+        inicio_bh = do_produto.loc[do_produto["ceasa"] == BH, "data"].min()
+        if pd.notna(inicio_bh):
+            antigo_bh = antigo_bh[antigo_bh["mes_ref"] < inicio_bh]
+        comp = pd.concat([comp, antigo_bh.assign(ceasa=BH)[["ceasa", "mes_ref", "preco"]]], ignore_index=True)
     comp = comp.groupby(["ceasa", "mes_ref"], as_index=False)["preco"].mean()
     fig3 = go.Figure()
     extra = iter(EXTRAS)
