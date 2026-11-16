@@ -27,3 +27,15 @@ assert r["veredito"] == "B é melhor — diferença consistente" and r["k"] == 6
 assert M.resumo_teste(pd.Series([5.0, -4, 6], index=[1, 2, 3]))["veredito"].startswith("Inconclusivo")
 
 print("ok: teste justo não olha o próprio ano; veredito correto")
+
+# Fatores de mercado: toda série usada na prova tem de existir no banco (ex.: o IBGE parou o "café total" em 2017).
+import fatores_calc as F  # noqa: E402
+
+assert F.TRANSFORMA["anual"](pd.Series(range(1, 25), dtype=float)).iloc[12] == 12.0  # 13 contra 1 = +1200%
+if not M.ONLINE:
+    T = F.fatores()
+    falta = [c for _, cols, *_ in F.HIPOTESES for c in cols if c not in T.columns]
+    assert not falta, f"séries que a prova usa e não estão no banco: {falta} (rode coleta\\fatores_mercado.py)"
+    velhas = [c for _, cols, *_ in F.HIPOTESES for c in cols if T[c].dropna().index.max() < pd.Period.now("M") - 6]
+    assert not velhas, f"séries paradas há mais de 6 meses: {velhas}"
+    print(f"ok: {len(F.HIPOTESES)} grupos de hipóteses com séries presentes e atualizadas")

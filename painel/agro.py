@@ -15,7 +15,8 @@ import clima_preco_calc as C
 import modelo as M
 from modelo import MESES, MESES_LONGO, brl
 
-FUNDO, TEXTO, TEXTO_2, GRADE = "#1a1a19", "#f0efec", "#c3c2b7", "#2e2e2b"
+import estilo as ES
+from estilo import FUNDO, GRADE, TEXTO, TEXTO_2
 AZUL, LARANJA, VERDE, CINZA = "#3987e5", "#d95926", "#199e70", "#6b6a63"
 
 st.markdown(
@@ -35,21 +36,11 @@ st.markdown(
 )
 
 
-def cartao(rotulo, valor, detalhe="", cor=None):
-    estilo = f' style="color:{cor}"' if cor else ""
-    st.markdown(f'<div class="cartao"><div class="rotulo">{rotulo}</div><div class="valor"{estilo}>{valor}</div>'
-                f'<div class="detalhe">{detalhe}</div></div>', unsafe_allow_html=True)
+cartao = ES.cartao
 
 
 def visual(fig, titulo_y, altura=380, sufixo="", prefixo=""):
-    fig.update_layout(paper_bgcolor=FUNDO, plot_bgcolor=FUNDO, font=dict(color=TEXTO, size=13), height=altura,
-                      margin=dict(l=10, r=10, t=30, b=10), hovermode="x unified",
-                      legend=dict(orientation="h", y=1.12, x=0, font=dict(color=TEXTO_2)),
-                      hoverlabel=dict(bgcolor="#262624", font_color=TEXTO))
-    fig.update_xaxes(showgrid=False, linecolor=GRADE, tickfont=dict(color=TEXTO_2))
-    fig.update_yaxes(gridcolor=GRADE, zeroline=False, tickfont=dict(color=TEXTO_2), ticksuffix=sufixo,
-                     tickprefix=prefixo, title=dict(text=titulo_y, font=dict(color=TEXTO_2)))
-    return fig
+    return ES.visual(fig, titulo_y, altura, sufixo, prefixo)
 
 
 def num(v, casas=2):

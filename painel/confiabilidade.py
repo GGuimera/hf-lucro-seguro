@@ -12,7 +12,8 @@ sys.path.append(str(Path(__file__).resolve().parent))
 import modelo as M
 from modelo import MESES, brl, num
 
-FUNDO, TEXTO, TEXTO_2, GRADE = "#1a1a19", "#f0efec", "#c3c2b7", "#2e2e2b"
+import estilo as ES
+from estilo import FUNDO, GRADE, TEXTO, TEXTO_2
 AZUL, LARANJA = "#3987e5", "#d95926"
 
 st.markdown(
@@ -31,21 +32,11 @@ st.markdown(
 )
 
 
-def cartao(rotulo, valor, detalhe="", cor=None):
-    estilo = f' style="color:{cor}"' if cor else ""
-    st.markdown(f'<div class="cartao"><div class="rotulo">{rotulo}</div><div class="valor"{estilo}>{valor}</div>'
-                f'<div class="detalhe">{detalhe}</div></div>', unsafe_allow_html=True)
+cartao = ES.cartao
 
 
 def visual(fig, titulo_y, altura=340, sufixo=""):
-    fig.update_layout(paper_bgcolor=FUNDO, plot_bgcolor=FUNDO, font=dict(color=TEXTO, size=13), height=altura,
-                      margin=dict(l=10, r=10, t=30, b=10), hovermode="x unified",
-                      legend=dict(orientation="h", y=1.12, x=0, font=dict(color=TEXTO_2)),
-                      hoverlabel=dict(bgcolor="#262624", font_color=TEXTO))
-    fig.update_xaxes(showgrid=False, linecolor=GRADE, tickfont=dict(color=TEXTO_2), type="category")
-    fig.update_yaxes(gridcolor=GRADE, zeroline=False, tickfont=dict(color=TEXTO_2), ticksuffix=sufixo,
-                     title=dict(text=titulo_y, font=dict(color=TEXTO_2)))
-    return fig
+    return ES.visual(fig, titulo_y, altura, sufixo, categoria=True)
 
 
 @st.cache_data(ttl=6 * 3600, show_spinner="Testando o modelo nos anos passados…")
@@ -192,7 +183,7 @@ with sqlite3.connect(M.BANCO) as con:
         try:
             a, b = con.execute(sql).fetchone()
             return f"{a} a {b}" if a else "—"
-        except Exception:
+        except sqlite3.OperationalError:
             return "—"
     fontes = pd.DataFrame([
         {"Fonte": "Conab / Prohort — preços diários das Ceasas", "O que usamos": "preço mais comum do dia, 43 Ceasas, 48 produtos",

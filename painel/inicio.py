@@ -9,7 +9,9 @@ from pathlib import Path
 import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent))
-from modelo import ONLINE  # no site público a metodologia de previsão fica escondida
+from modelo import ONLINE
+import membros
+import pagina_inicial
 
 st.set_page_config(page_title="Preço Seguro", page_icon="🌱", layout="wide")
 
@@ -18,13 +20,18 @@ MENU = {
                         ("analise.py", "Análise por cultura (modelo preditivo)", "🔬"),
                         ("clima.py", "Clima e alertas nos polos", "🌦️"),
                         ("clima_preco.py", "O clima explica o preço? (prova)", "🧪"),
+                        ("fatores.py", "Fatores de mercado explicam o preço? (prova)", "🧮"),
                         ("noticias.py", "Notícias × preços", "📰")],
     "Agro": [("agro.py", "Commodities: grãos, café, boi, adubo", "🚜")],
+    "Forragem hidropônica": [("forragem.py", "Viabilidade de forragem hidropônica", "🌾")],
     "Ciência": [("artigos.py", "Artigos científicos", "📚")],
     "Confiança": [("confiabilidade.py", "Dá para confiar? (provas e fontes)", "✅")],
 }
-OCULTAS_ONLINE = {"plantar.py", "analise.py", "clima_preco.py", "confiabilidade.py"}  # páginas de previsão/metodologia
-menu = {grupo: [st.Page(arq, title=t, icon=i, default=(arq == "app.py")) for arq, t, i in itens
-                if not (ONLINE and arq in OCULTAS_ONLINE)] for grupo, itens in MENU.items()}
-pagina = st.navigation({g: ps for g, ps in menu.items() if ps})
-pagina.run()
+PUBLICAS = {"app.py", "noticias.py", "clima.py", "agro.py", "artigos.py"}  # o que todo visitante vê
+landing = st.Page(pagina_inicial.renderizar, title="Início", icon="🏠", default=True)
+grupos = {"Geral": [landing]}
+for grupo, itens in MENU.items():
+    visiveis = [(arq, t, i) for arq, t, i in itens if arq in PUBLICAS or membros.logado()]
+    if visiveis:
+        grupos[grupo] = [st.Page(arq, title=t, icon=i) for arq, t, i in visiveis]
+st.navigation(grupos).run()
