@@ -1,0 +1,14 @@
+item;name;category;tier;exclusive;scale;price;kwh_day;life_years;source;price_date
+BANDEJA;Bandeja feita de proteção de palete (25 x 150 cm);bandejas;1;no;tray;0;0;3;Sua fazenda: sobra abundante e gratuita (teste). Confirme o custo se for comprar;2026-11-16
+ESTANTE;Estante de aço 5 prateleiras (2 bandejas por nível);estrutura;1;no;rack;386.91;0;10;Telhanorte, estante de aço 5 prateleiras (preço Pix) https://www.telhanorte.com.br/estante-de-aco-com-5-prateleiras-2535246/p;2026-11-16
+BALDE_MOLHO;Tambor 60 L para deixar a semente de molho;molho;1;no;unit;60;0;5;Estimativa (confirmar orçamento);2026-11-16
+CAIXA_AGUA;Caixa d'água 500 L;agua;1;no;unit;400;0;15;Estimativa (confirmar orçamento);2026-11-16
+TERMOHIGRO;Termo-higrômetro digital;controle;1;no;unit;60;0;3;Estimativa (confirmar orçamento);2026-11-16
+REGA_MANUAL;Rega manual (mangueira com bico de névoa);irrigacao;1;yes;unit;80;0;2;Estimativa (confirmar orçamento);2026-11-16
+REGA_TIMER;Microaspersão com bomba 1/2 cv e temporizador;irrigacao;2;yes;unit;900;0.4;6;Estimativa (confirmar orçamento);2026-11-16
+REGA_AUTO;Nebulização automática com controlador e válvula solenoide;irrigacao;3;yes;unit;1800;0.6;6;Estimativa (confirmar orçamento);2026-11-16
+EXAUSTOR;Exaustor/ventilador para renovar o ar;clima;2;yes;fan;350;1.5;6;Estimativa (confirmar orçamento);2026-11-16
+AR_COND;Ar-condicionado split 12.000 BTU inverter (quente/frio);clima;3;yes;ac;1999;8.0;10;Buscapé, menor preço TCL BreezeIN 12.000 BTU https://www.buscape.com.br/busca/ar+condicionado+split+12000+inverter;2026-11-16
+LED;Fita de LED por estante (opcional, deixa a folha mais verde);luz;2;no;rack;40;0.3;4;Estimativa (confirmar orçamento);2026-11-16
+ISOLAMENTO;Isolamento da sala (lona térmica/isopor) por m²;sala;2;no;m2;120;0;8;Estimativa (confirmar orçamento);2026-11-16
+SENSORES;Sensores Wi-Fi de temperatura e umidade com alerta no celular;controle;3;no;sensor;600;0.05;5;Estimativa (confirmar orçamento);2026-11-16

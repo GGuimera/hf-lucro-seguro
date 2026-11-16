@@ -1,0 +1,5 @@
+feed;name;dm_pct;cp_pct;price_kg;price_code;source
+MILHO_GRAO;Milho em grão (concentrado);88;9.0;;MILHO;Preço: Cepea (série do Preço Seguro). MS e PB: tabelas CQBAL/Embrapa
+SILAGEM_MILHO;Silagem de milho;33;7.5;0.35;;Preço: estimativa (confirme o preço local). MS e PB: tabelas CQBAL/Embrapa
+FENO;Feno de tifton;88;10.0;1.20;;Preço: estimativa (confirme o preço local). MS e PB: tabelas CQBAL/Embrapa
+PASTO;Pasto (custo de produção);25;10.0;0.08;;Preço: estimativa (use o custo da sua pastagem). MS e PB: tabelas CQBAL/Embrapa

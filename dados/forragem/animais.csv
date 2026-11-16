@@ -1,0 +1,8 @@
+animal;name;weight_kg;dmi_pct_bw;max_fodder_pct_dm;cp_need_pct;benefits;cautions;source
+VACA_LEITE;Vaca de leite;550;3.2;30;16;Alimento verde o ano todo, inclusive na seca, ajuda a manter a produção de leite.;A forragem tem muita água: não passe de 30% da matéria seca da dieta e mantenha volumoso fibroso.;Referência geral (NRC Dairy 2001), ajuste com nutricionista
+GADO_CORTE;Gado de corte;450;2.3;25;12;Mantém ganho de peso na seca com pouca área.;O custo por kg de matéria seca costuma ser maior que pasto e silagem: confira a comparação.;Referência geral (BR-CORTE), ajuste com nutricionista
+OVINO;Ovino;50;3.5;30;14;Boa aceitação, útil para cordeiros e ovelhas em lactação.;Mude a dieta aos poucos (7 a 10 dias) para evitar problemas digestivos.;Referência geral (NRC Small Ruminants 2007), ajuste com nutricionista
+CAPRINO;Caprino;45;3.5;30;14;Boa aceitação, ajuda cabras leiteiras na seca.;Mude a dieta aos poucos e nunca ofereça forragem com mofo.;Referência geral (NRC Small Ruminants 2007), ajuste com nutricionista
+EQUINO;Equino;450;2.0;25;10;Alimento verde e palatável, bom para animais de baixo esforço.;Cavalos são muito sensíveis a mofo (cólica): só forragem fresca e limpa.;Referência geral (NRC Horses 2007), ajuste com veterinário
+SUINO;Suíno;100;3.0;10;16;Complemento verde para matrizes.;Suíno digere pouca fibra: use só como complemento (até 10%).;Referência geral (NRC Swine 2012), ajuste com nutricionista
+COELHO;Coelho;3;5.0;40;16;Muito bem aceito e reduz o uso de ração.;Ofereça sem excesso de água livre para evitar diarreia.;Referência geral (literatura de cunicultura), ajuste com nutricionista

@@ -1,0 +1,8 @@
+check;name;loss_pct;tip
+SEMENTE_LIMPA;Semente limpa, sem grãos quebrados ou tratados com agrotóxico;5;Grão quebrado apodrece e puxa mofo. Semente tratada (colorida) não pode ir para o animal.
+DESINFECCAO;Semente desinfetada antes do molho (água sanitária 1%, 30 min);10;É a principal defesa contra mofo.
+HIGIENE;Bandejas lavadas e desinfetadas a cada ciclo;8;Resto de raiz velha é foco de fungo.
+TEMPERATURA;Sala entre 18 e 24 °C;10;Acima de 28 °C o mofo dispara e abaixo de 12 °C o crescimento para.
+VENTILACAO;Ar circulando e umidade abaixo de 85%;8;Ar parado e úmido favorece fungos.
+GERMINACAO;Teste de germinação do lote (mínimo 85%);5;Coloque 100 sementes em papel úmido por 3 dias e conte as que brotaram.
+AGUA;Água limpa (poço ou rede, sem lodo);4;Água suja leva bactérias para a bandeja.
