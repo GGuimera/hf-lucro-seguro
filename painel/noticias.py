@@ -125,7 +125,7 @@ esc = st.selectbox("Evento", list(opcoes))
 e = ev[ev["id"] == opcoes[esc]].iloc[0]
 icone, rotulo, _ = TIPOS.get(e["tipo"], ("📰", e["tipo"], ""))
 st.markdown(f"**{icone} {rotulo} · {MESES[int(e['mes'][5:]) - 1]}/{e['mes'][:4]}** — {e['resumo']}  \n"
-            f"Fonte: [{e['fonte']}]({e['url']})")
+            f"[Ler a notícia]({e['url']})")
 cols = st.columns(len(e["produtos"]))
 for col, p in zip(cols, e["produtos"]):
     mod = M.modelo_produto(mensal, pl, p)
@@ -156,7 +156,7 @@ if not M.ONLINE:  # metodologia: só no computador, não no site público
     with st.expander("ℹ️ Como o número de cada quadro é calculado"):
         st.markdown(
             """
-1. Pegamos o preço mês a mês da cultura (sua planilha de BH nos anos antigos, a Conab de 2022 a 2025 e os boletins da Ceagesp em 2026).
+1. Pegamos o preço mês a mês da cultura.
 2. Tiramos o **efeito da época** — se a cenoura sempre sobe em março, essa alta normal não conta.
 3. Comparamos os **2 meses depois do evento** com a **média dos 3 meses antes**. O quadro mostra a maior variação nesses 2 meses.
 4. Para saber se foi algo especial, contamos em quantos meses do histórico houve uma variação desse tamanho:

@@ -231,7 +231,7 @@ for ano, g in mensal.sort_values(["ano", "mes"]).groupby("ano"):
     ))
 fig.update_xaxes(categoryorder="array", categoryarray=MESES)
 st.plotly_chart(estilo(fig, f"R$ por {unidade}"), width="stretch")
-st.caption(f"Dados deste gráfico: {fonte_anos}. Dica: clique num ano na legenda para esconder ou mostrar a linha.")
+st.caption("Dica: clique num ano na legenda para esconder ou mostrar a linha.")
 
 with st.expander("Ver os números deste gráfico"):
     tabela = mensal.pivot(index="mes", columns="ano", values="preco").round(2)
@@ -335,9 +335,9 @@ def carregar_ceagesp():
 
 cg = carregar_ceagesp()
 if not cg.empty:
-    st.subheader("🧾 Ceagesp São Paulo — boletins de 2026")
+    st.subheader("🧾 São Paulo — boletins de 2026")
     st.markdown(
-        '<p class="dica">Preços dos boletins oficiais da Ceagesp (segunda, quarta e sexta). A faixa sombreada vai do '
+        '<p class="dica">Preços dos boletins de São Paulo (segunda, quarta e sexta). A faixa sombreada vai do '
         "<b>menor</b> ao <b>maior</b> preço do dia; a linha é o preço <b>mais comum</b>. "
         "Atenção: aqui os produtos são separados por tipo e classificação, por isso os valores não se comparam "
         "direto com os gráficos acima.</p>",
@@ -346,7 +346,7 @@ if not cg.empty:
     b1, b2 = st.columns([2, 1])
     nomes = sorted(cg["produto"].unique())
     sugestao = next((i for i, n in enumerate(nomes) if n.startswith(produto.split()[0])), 0)
-    prod_cg = b1.selectbox("Produto (Ceagesp)", nomes, index=sugestao)
+    prod_cg = b1.selectbox("Produto (São Paulo)", nomes, index=sugestao)
     classes = sorted(cg.loc[cg["produto"] == prod_cg, "classificacao"].unique())
     classe_cg = b2.selectbox("Tipo / classificação", classes)
     s = cg[(cg["produto"] == prod_cg) & (cg["classificacao"] == classe_cg)].sort_values("data")
@@ -365,7 +365,6 @@ if not cg.empty:
 # ---------- Rodapé ----------
 st.divider()
 st.caption(
-    "Fontes: Ceagesp (boletins de 2026) e Conab / Prohort (preço mais comum do dia no atacado), com dados de "
-    f"{df['data'].min():%d/%m/%Y} a {df['data'].max():%d/%m/%Y}. "
+    f"Dados de {df['data'].min():%d/%m/%Y} a {df['data'].max():%d/%m/%Y}. "
     "Versão de teste — os preços podem ter dias faltando e não são recomendação de compra ou venda."
 )

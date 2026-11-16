@@ -71,7 +71,7 @@ with st.expander("ℹ️ Como o teste funciona (em 4 passos)", expanded=False):
     st.markdown(
         """
 1. **Clima de cada mês nos polos da cultura** (página *Clima e alertas*): chuva acima/abaixo do normal daquele mês, dias de
-   geada e de calor forte a mais ou a menos. Cada polo pesa pela parte que tem na produção do Brasil (IBGE).
+   geada e de calor forte a mais ou a menos. Cada polo pesa pela parte que tem na produção do Brasil.
 2. **Preço sem o efeito da época**: quanto o preço ficou acima ou abaixo da média dos 3 meses anteriores — no mesmo mês do
    clima, 1 mês depois e 2 meses depois.
 3. **Prova contra o acaso**: medimos a correlação (de −1 a +1) e comparamos com o que acontece quando ligamos o preço ao
@@ -102,7 +102,7 @@ if aprovados.empty:
         '<div class="aviso"><b>Conclusão honesta:</b> com os dados de hoje, <b>não dá para afirmar</b> que o clima do mês nos '
         "polos antecipa o preço na Ceasa. Isso não quer dizer que o clima não importa — quer dizer que os dados ainda são "
         "<b>curtos demais</b> para separar o efeito do clima do sobe-e-desce normal do mercado (a maioria das culturas só tem "
-        "uns 40 meses de preço da Conab). Use os alertas de clima como <b>informação</b>, não como previsão de preço.</div>",
+        "uns 40 meses de preço). Use os alertas de clima como <b>informação</b>, não como previsão de preço.</div>",
         unsafe_allow_html=True)
 else:
     st.success("Relações aprovadas mesmo depois da correção: " + "; ".join(
@@ -202,8 +202,8 @@ st.dataframe(pd.DataFrame({
 st.subheader("4. Limites desta prova")
 st.markdown(
     """
-- **Preço curto:** fora alho, cenoura e cebola (planilha de BH desde 2017), o preço vem da média do Brasil da Conab, com uns
-  **40 meses** — pouco para separar clima do sobe-e-desce normal. Mais anos (pedido à Conab, sua planilha) deixam a prova mais forte.
+- **Preço curto:** fora alho, cenoura e cebola (planilha de BH desde 2017), o preço vem da média do Brasil, com uns
+  **40 meses** — pouco para separar clima do sobe-e-desce normal. Mais anos (sua planilha, por exemplo) deixam a prova mais forte.
 - **Mês inteiro:** uma chuva de granizo de um dia some no total do mês. A próxima melhoria é testar por semana.
 - **Irrigação e importação:** quase todo hortifrúti é irrigado (a seca pesa menos) e o alho também depende da importação
   (China/Argentina), que o clima daqui não explica.
@@ -211,4 +211,3 @@ st.markdown(
 - **Correlação não é causa:** mesmo uma relação aprovada mostra que as coisas andam juntas, não que uma causa a outra.
 """
 )
-st.caption("Clima: Open-Meteo.com (ERA5/Copernicus) · Produção por município: IBGE PAM · Preços: Conab/Prohort, Ceagesp e planilha de BH.")

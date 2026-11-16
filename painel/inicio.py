@@ -25,7 +25,7 @@ MENU = {
     "Agro": [("agro.py", "Commodities: grãos, café, boi, adubo", "🚜")],
     "Forragem hidropônica": [("forragem.py", "Viabilidade de forragem hidropônica", "🌾")],
     "Ciência": [("artigos.py", "Artigos científicos", "📚")],
-    "Confiança": [("confiabilidade.py", "Dá para confiar? (provas e fontes)", "✅")],
+    "Confiança": [("confiabilidade.py", "Dá para confiar? (provas)", "✅")],
 }
 PUBLICAS = {"app.py", "noticias.py", "clima.py", "agro.py", "artigos.py"}  # o que todo visitante vê
 landing = st.Page(pagina_inicial.renderizar, title="Início", icon="🏠", default=True)

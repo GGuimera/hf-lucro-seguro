@@ -179,7 +179,7 @@ with c2:
     cartao("Coordenadas", f"{num(P['lat'], 2)}, {num(P['lon'], 2)}", "ponto de referência do polo")
 with c3:
     cartao("O que o polo produz", " · ".join(txt_cult(r) for r in cult_polo.itertuples()) or "—",
-           "% = parte da produção nacional (IBGE, média 2022–2024)")
+           "% = parte da produção nacional, média 2022–2024")
 
 prev, origem = previsao(float(P["lat"]), float(P["lon"]), polo)
 h = historico(polo)
@@ -189,7 +189,7 @@ st.subheader("1. Próximos 16 dias: o que dizem os 3 modelos")
 if prev.empty:
     st.warning("Não foi possível buscar a previsão agora (sem internet?) e ainda não há previsão guardada. Rode coleta\\clima.py.")
     st.stop()
-st.markdown(f'<p class="dica">Fonte: Open-Meteo ({origem}). Quando os 3 modelos concordam, a previsão é mais segura; '
+st.markdown(f'<p class="dica">Quando os 3 modelos concordam, a previsão é mais segura; '
             "quando discordam muito, trate como incerta. Previsões além de 7–10 dias erram bem mais.</p>", unsafe_allow_html=True)
 med = prev.groupby("data")[["tmax", "tmin", "chuva"]].median()
 chuva_prev = med["chuva"].sum()
@@ -258,7 +258,7 @@ else:
             lambda f: "—" if pd.isna(f) else f"{'⚠️ raro' if f < 0.10 else 'comum'}: {f:.0%} dos dias".replace(".", ",")),
     })
     st.dataframe(tab, hide_index=True, width="stretch")
-st.caption("Limites por cultura em dados\\clima_limites.csv (geada: Embrapa Trigo/INMET — mínima a 2 m ≤ 3 °C costuma dar "
+st.caption("Limites por cultura (geada: mínima a 2 m ≤ 3 °C costuma dar "
            "cerca de −1 °C na folha; calor e chuva: estimativa inicial, ajustável). Baixadas e fundos de vale costumam "
            "ficar alguns graus mais frios que o ponto de referência.")
 
@@ -274,7 +274,7 @@ else:
                                               geada=("tmin", lambda s: (s <= 3).sum()))
     norm = por_ano.groupby("mes").mean()
     anos_txt = f"{hc['ano'].min()}–{hc['ano'].max()}"
-    st.markdown(f'<p class="dica">Médias de {hc["ano"].nunique()} anos ({anos_txt}), reanálise ERA5 (Copernicus) pelo Open-Meteo. '
+    st.markdown(f'<p class="dica">Médias de {hc["ano"].nunique()} anos ({anos_txt}), reanálise histórica do clima. '
                 "A barra mostra a chuva do mês; a linha cheia, a máxima média; a pontilhada, a mínima média.</p>", unsafe_allow_html=True)
     fig3 = go.Figure(go.Bar(x=MESES, y=norm["chuva"], marker=dict(color="#3987e5"), name="Chuva do mês",
                             hovertemplate="%{x}: %{y:.0f} mm<extra></extra>"))
@@ -347,7 +347,7 @@ else:
             f'<div class="aviso"><b>O que isso quer dizer no campo:</b> numa mesma região, a parte {num(r["alt_p90"] - r["alt_p10"], 0)} m '
             f"mais alta fica em média ~{num(r['dif_temp_p10_p90'], 1)} °C mais fria — o que alonga o ciclo e muda a época. Mas em noites "
             "frias e sem vento o <b>ar frio escorre e se junta nas baixadas</b>: é ali que a geada pega primeiro, mesmo sendo mais baixo. "
-            "Mapa feito com o Copernicus DEM (pontos de 90 m) pelo Open-Meteo, amostrado a cada "
+            "Mapa de relevo (pontos de 90 m), amostrado a cada "
             f"{'~2,2 km' if esc_r == 'regional' else '~560 m'}: isso <b>suaviza os declives</b> (no teste, a Serra do RJ passou de 31% "
             "para 61% de área \"plana ou suave\" só por espaçar mais os pontos). Use a declividade para comparar polos, nunca para "
             "decidir o talhão.</div>", unsafe_allow_html=True)
@@ -368,7 +368,7 @@ else:
         tag = " · 🤖 não conferida" if n.conferida != "sim" else ""
         geral = " · notícia geral do país" if "TODOS" in n.polos.split("|") else ""
         st.markdown(f"{icone.get(n.tipo, '🌤️')} **{n.data[8:10]}/{n.data[5:7]}** · [{n.titulo}]({n.url}) — {n.fonte}{geral}{tag}")
-    st.caption("Encontradas automaticamente no Google Notícias todo dia (só título, fonte e link). Confira sempre na fonte.")
+    st.caption("Encontradas automaticamente todo dia (só título e link). Confira sempre na notícia.")
 
 # ---------- 6. Panorama ----------
 st.subheader("6. Panorama: todos os polos nos próximos 16 dias")

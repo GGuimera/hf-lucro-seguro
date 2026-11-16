@@ -72,7 +72,7 @@ if mensal.empty:
 
 _, ult_ipca = A.ipca_fator(mensal)
 st.markdown(f'<p class="dica">Valores "de hoje" = corrigidos pela inflação (IPCA) até {ult_ipca}. '
-            "Preços mundiais e de fertilizantes vêm em dólar (Banco Mundial) e são convertidos pelo dólar do mês (Banco Central).</p>",
+            "Preços mundiais e de fertilizantes vêm em dólar e são convertidos pelo dólar do mês.</p>",
             unsafe_allow_html=True)
 
 # ---------- 1. Panorama ----------
@@ -216,7 +216,7 @@ else:
             fator = prod_ha * kg_p / kg_u * (1 - desc)  # unidades de preço vendidas por ha
             la, lb = tab["A"] * fator - custo_ha, tab["B"] * fator - custo_ha
             dif, fmt = lb - la, (lambda v: brl(v, 0))
-            st.caption(f"Custo e produtividade padrão: {c['fonte']} — {c['local']}, safra {c['safra']} "
+            st.caption(f"Custo e produtividade padrão de {c['local']}, safra {c['safra']} "
                        f"(custo total, inclui remuneração da terra e do capital). Ajuste para a sua fazenda.")
         else:
             la, lb, dif = tab["A"], tab["B"], tab["dif"]
@@ -284,7 +284,7 @@ if len(rel) > 24:
     fig5.add_hline(y=media, line=dict(color="#8a897f", width=1, dash="dot"), annotation_text="média 10 anos",
                    annotation_font_color=TEXTO_2)
     st.plotly_chart(visual(fig5, f"{un_g} por tonelada", 300), width="stretch")
-    st.caption("Quanto MENOR, melhor para o produtor (menos sacas para pagar o adubo). Adubo: preço internacional (Banco Mundial) "
+    st.caption("Quanto MENOR, melhor para o produtor (menos sacas para pagar o adubo). Adubo: preço internacional "
                "convertido em reais, sem frete e impostos até a fazenda — serve para comparar épocas, não como preço de compra.")
 
 # ---------- 6. Clima nos polos ----------
@@ -321,8 +321,7 @@ else:
                            "Alertas": " · ".join(alerta) or "✅ nada fora do comum"})
         st.dataframe(pd.DataFrame(linhas), hide_index=True, width="stretch")
         st.caption(f"Previsão de {prev['coletado_em'].iloc[0]} · faixa = do modelo mais otimista ao mais pessimista "
-                   "(europeu ECMWF, americano GFS e alemão ICON, via Open-Meteo). Limites de alerta: " +
-                   (lp["fonte"] if lp is not None else "—") + ".")
+                   "(europeu, americano e alemão).")
 
 # ---------- 7. Clima x preço ----------
 if not M.ONLINE:

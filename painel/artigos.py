@@ -61,8 +61,8 @@ def carregar():
 a = carregar()
 st.title("📚 Artigos científicos")
 st.markdown(
-    '<p class="dica">Pesquisas publicadas de <b>2010 em diante</b> sobre as culturas do sistema, do mundo todo (OpenAlex) e da '
-    "<b>Embrapa</b> (repositório Alice). Atualizado pela rotina diária. "
+    '<p class="dica">Pesquisas publicadas de <b>2010 em diante</b> sobre as culturas do sistema, do mundo todo e do Brasil. '
+    "Atualizado pela rotina diária. "
     '<a href="artigos" target="_blank">↗ Abrir esta página numa janela separada</a></p>',
     unsafe_allow_html=True,
 )
@@ -83,12 +83,11 @@ opcoes = sorted({c for cs in a["lista_cult"] for c in cs if c}, key=lambda c: (g
 escolha = f1.multiselect("Cultura", opcoes, format_func=lambda c: f"{nomes.get(c, c)} ({grupos.get(c, '')})",
                          placeholder="Todas as culturas")
 temas = f2.multiselect("Tema", list(O_QUE_MUDA), placeholder="Todos os temas")
-g1, g2, g3, g4 = st.columns([1.3, 1, 1, 1])
+g1, g2, g3 = st.columns([1.3, 1, 1])
 ano_min, ano_max = int(a["ano"].min()), int(a["ano"].max())
 anos = g1.slider("Anos", ano_min, ano_max, (ano_min, ano_max))
 nota_min = g2.slider("Impacto mínimo", 0, 100, 0, 5, help="Nota de 0 a 100: 60% citações + 40% utilidade prática")
-fontes = g3.selectbox("Fonte", ["Todas", "Só Embrapa", "Só OpenAlex (mundo)"])
-ordem = g4.selectbox("Ordenar por", ["Maior impacto", "Mais citados", "Mais recentes"])
+ordem = g3.selectbox("Ordenar por", ["Maior impacto", "Mais citados", "Mais recentes"])
 h1, h2 = st.columns([3, 1])
 busca = h1.text_input("Procurar palavra no título ou no resumo", placeholder="ex.: nematoide, irrigação, potássio, Cerrado")
 aberto = h2.toggle("Só acesso aberto (grátis)", value=False)
@@ -98,10 +97,6 @@ if escolha:
     f = f[f["lista_cult"].apply(lambda cs: bool(set(cs) & set(escolha)))]
 if temas:
     f = f[f["lista_temas"].apply(lambda ts: bool(set(ts) & set(temas)))]
-if fontes == "Só Embrapa":
-    f = f[f["fonte"].str.contains("Embrapa")]
-elif fontes == "Só OpenAlex (mundo)":
-    f = f[f["fonte"].str.contains("OpenAlex")]
 if busca.strip():
     t = busca.strip().lower()
     f = f[f["titulo"].str.lower().str.contains(t, regex=False) | f["resumo"].fillna("").str.lower().str.contains(t, regex=False)]
@@ -111,9 +106,8 @@ col_ord = {"Maior impacto": "impacto", "Mais citados": "citacoes", "Mais recente
 f = f.sort_values([col_ord, "impacto"], ascending=False, na_position="last")
 
 # ---------- resumo ----------
-c1, c2, c3, c4 = st.columns(4)
+c1, c3, c4 = st.columns(3)
 c1.metric("Artigos encontrados", f"{len(f):,}".replace(",", "."))
-c2.metric("Da Embrapa", f"{int(f['fonte'].str.contains('Embrapa').sum()):,}".replace(",", "."))
 c3.metric("Acesso aberto", f"{(f['acesso_aberto'] == 1).mean():.0%}" if len(f) else "—")
 c4.metric("Última coleta", pd.to_datetime(a["coletado_em"]).max().strftime("%d/%m/%Y"))
 
@@ -138,7 +132,7 @@ for _, r in f.iloc[(pag - 1) * POR_PAG: pag * POR_PAG].iterrows():
     cor = "#4cc38a" if nota >= 60 else "#e0b341" if nota >= 35 else "#9a998f"
     cit = "citações: não informado" if pd.isna(r["citacoes"]) or r["citacoes"] < 0 else f"{int(r['citacoes']):,} citações".replace(",", ".")
     area = r.get("area") if isinstance(r.get("area"), str) and r.get("area") not in ("", "Embrapa") else ""
-    meta = " · ".join(filter(None, [str(int(r["ano"])), html.escape(r["revista"] or ""), cit, html.escape(r["fonte"]), html.escape(area),
+    meta = " · ".join(filter(None, [str(int(r["ano"])), html.escape(r["revista"] or ""), cit, html.escape(area),
                                     "🔓 acesso aberto" if r["acesso_aberto"] == 1 else ""]))
     chips = "".join(f'<span class="chip">🌱 {html.escape(nomes.get(c, c))}</span>' for c in r["lista_cult"] if c) + \
         "".join(f'<span class="chip">{html.escape(t)}</span>' for t in r["lista_temas"])
@@ -166,13 +160,11 @@ with st.expander("ℹ️ Como a nota de impacto e a interpretação são feitas"
   - *Citações*: quantas vezes outros cientistas citaram o artigo **por ano desde que saiu**, comparado com os outros artigos
     da mesma cultura (assim um artigo de 2024 não perde para um de 2011 só por ser novo).
   - *Utilidade prática*: o texto fala de experimento de campo, produtividade, custo/lucro, resultado em %, recomendação, Brasil?
-  - Artigos sem número de citações (alguns da Embrapa) recebem só a parte prática (no máximo 70) e isso aparece ao passar o mouse na nota.
+  - Artigos sem número de citações (alguns) recebem só a parte prática (no máximo 70) e isso aparece ao passar o mouse na nota.
 - **Temas e "o que isso pode mudar"**: classificação automática por palavras-chave (português e inglês). Pode errar em artigos
   com termos parecidos.
 - **Principal resultado**: a frase do próprio resumo com mais sinais de resultado (aumentou, reduziu, %...). Muitos resumos são em
   inglês; a versão com IA (resumo em português simples) pode ser ligada depois.
-- **Fontes**: [OpenAlex](https://openalex.org) (catálogo aberto mundial, área de Ciências Agrárias e Biológicas) e
-  [Embrapa Alice](https://www.alice.cnptia.embrapa.br) (dados abertos da Embrapa). Os direitos de cada artigo são da revista e dos autores;
-  aqui ficam só a referência, o resumo e o link.
+- **Direitos**: os direitos de cada artigo são da revista e dos autores; aqui ficam só a referência, o resumo e o link.
 """
     )

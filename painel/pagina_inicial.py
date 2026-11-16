@@ -8,8 +8,7 @@ def renderizar():
     st.title("🌱 Preço Seguro")
     st.markdown(
         "Ajuda o produtor rural a decidir **o que plantar e quando vender**, com o histórico de preços das Ceasas, "
-        "dos custos de produção e das perdas. Os dados vêm de fontes públicas (Conab, Ceagesp, CeasaMinas, Cepea, "
-        "Banco Mundial, Banco Central e outras)."
+        "dos custos de produção e das perdas."
     )
 
     if membros.logado():

@@ -89,8 +89,8 @@ st.markdown(
     "**quanto rende cada grão**, **quanto custa montar e manter**, **em quanto tempo se paga** e **quais os riscos**, "
     "com os preços de grãos, o clima e as notícias do Preço Seguro."
 )
-st.markdown('<div class="aviso">Estimativa para estudo. Os números de rendimento e nutrição vêm da literatura '
-            "(Embrapa, FAO) e variam com a semente e o manejo. Preços de peças sem fonte são estimativas: "
+st.markdown('<div class="aviso">Estimativa para estudo. Os números de rendimento e nutrição são referências técnicas '
+            "e variam com a semente e o manejo. Preços de peças são estimativas: "
             "confirme orçamentos antes de investir e ajuste a dieta com um nutricionista.</div>", unsafe_allow_html=True)
 
 # ---------- inputs used by every tab ----------
@@ -109,7 +109,7 @@ polo = c1.selectbox("Região (clima)", reg.index, index=list(reg.index).index("C
 nivel = c2.radio("Nível do sistema", list(F.TIERS), format_func=F.TIERS.get, horizontal=True, index=0)
 sobra = c3.number_input("Forragem extra para vender (kg/dia)", 0.0, 10000.0, 0.0, step=10.0)
 preco_venda = c4.number_input("Preço de venda (R$/kg)", 0.0, 5.0, 0.70, step=0.05,
-                              help="Referência: forragem hidropônica de milho anunciada a R$ 0,70/kg no MF Rural (nov/2026).")
+                              help="Referência: forragem hidropônica de milho anunciada a R$ 0,70/kg (nov/2026).")
 
 preco_sem, fonte_sem, ref_sem = precos[grao]
 with st.expander("Custos e premissas (pode mudar)"):
@@ -118,13 +118,13 @@ with st.expander("Custos e premissas (pode mudar)"):
                            help="Você compra os grãos até 20% mais barato que na cooperativa.")
     preco_sem = c2.number_input(f"Semente de {G.loc[grao, 'name'].lower()} (R$/kg)", 0.0, 20.0,
                                 round(preco_sem * (1 - desc / 100), 2), step=0.05,
-                                help=f"Referência: {fonte_sem} ({ref_sem}), já com o desconto acima.")
+                                help="Preço de referência, já com o desconto acima.")
     tarifa = c3.number_input("Energia (R$/kWh)", 0.0, 3.0, 0.85, step=0.05,
-                             help="Média residencial prevista pela Aneel para dez/2026: R$ 0,851/kWh. Veja a conta da sua distribuidora.")
+                             help="Média residencial prevista para dez/2026: R$ 0,851/kWh. Veja a conta da sua distribuidora.")
     agua_m3 = c4.number_input("Água (R$/m³)", 0.0, 50.0, 0.0, step=1.0, help="0 se a água é de poço próprio.")
     c1, c2, c3, c4 = st.columns(4)
     nutrientes = c1.number_input("Solução nutritiva (R$/mês)", 0.0, 5000.0, 0.0, step=10.0,
-                                 help="Opcional. Kit para 1.000 L de água: R$ 66,40 (MF Rural, nov/2026).")
+                                 help="Opcional. Kit para 1.000 L de água: R$ 66,40 (nov/2026).")
     taxa = c2.number_input("Juros de comparação (% ao ano)", 0.0, 40.0, 12.0, step=0.5) / 100
     horizonte = c3.selectbox("Horizonte (meses)", [12, 24, 36, 48, 60], index=2)
     alim_ref = c4.selectbox("A forragem substitui", FE.index, format_func=lambda f: FE.loc[f, "name"],
@@ -138,7 +138,7 @@ with st.expander("Custos e premissas (pode mudar)"):
     ganho = c4.number_input("Ganho de leite por vaca (L/dia)", 0.0, 10.0, 3.0, step=0.5, disabled=not leite_on)
     c1, c2, c3, c4 = st.columns(4)
     preco_leite = c1.number_input("Preço do leite (R$/L)", 0.0, 10.0, round(leite_ref, 2), step=0.05, disabled=not leite_on,
-                                  help=f"Cepea/Esalq, média Brasil: {leite_mes_ref} (último mês na base do Preço Seguro).")
+                                  help=f"Média Brasil, último mês disponível: {leite_mes_ref}.")
     modelo = c2.radio("Modelo de negócio", ["Só na minha fazenda", "Vender o sistema", "Alugar o sistema"],
                       help="Venda: recebe o preço de cada sistema vendido. Aluguel: recebe por mês, depois de instalado.")
     clientes = c3.number_input("Clientes por ano", 0, 500, 0, disabled=modelo == "Só na minha fazenda")
@@ -157,11 +157,11 @@ with abas[2]:
     cat["use"] = cat["item"].isin(F.preset(PARTS, nivel))
     cat["tier_name"] = cat["tier"].map(F.TIERS)
     ed = st.data_editor(
-        cat[["use", "name", "tier_name", "price", "source", "price_date"]], key=f"pecas_{nivel}", hide_index=True,
-        width="stretch", disabled=["name", "tier_name", "source", "price_date"],
+        cat[["use", "name", "tier_name", "price", "price_date"]], key=f"pecas_{nivel}", hide_index=True,
+        width="stretch", disabled=["name", "tier_name", "price_date"],
         column_config={"use": st.column_config.CheckboxColumn("Usar"), "name": "Peça", "tier_name": "Nível",
                        "price": st.column_config.NumberColumn("Preço (R$)", format="%.2f", min_value=0.0),
-                       "source": st.column_config.TextColumn("Fonte", width="medium"), "price_date": "Data do preço"})
+                       "price_date": "Data do preço"})
     escolhidas = cat.loc[ed["use"].values, "item"].tolist()
     PARTS = PARTS.assign(price=ed["price"].values)
 
@@ -262,8 +262,7 @@ with abas[0]:
         cartao(f"Para {an['name'].lower()}: cuidados", "", an["cautions"])
     pb_dieta = g["cp_pct"]
     st.markdown(f'<p class="dica">{g["name"]} tem {num(pb_dieta)}% de proteína na matéria seca; '
-                f'{an["name"].lower()} precisa de cerca de {num(an["cp_need_pct"], 0)}% na dieta total. '
-                f'Fontes: {g["source"]}. Animal: {an["source"]}.</p>', unsafe_allow_html=True)
+                f'{an["name"].lower()} precisa de cerca de {num(an["cp_need_pct"], 0)}% na dieta total.</p>', unsafe_allow_html=True)
 
 # ---------- 2. simulation ----------
 with abas[1]:
@@ -367,7 +366,6 @@ with abas[3]:
                                "R$ por kg de MS": comp["brl_kg_dm"].map(brl),
                                "R$ por kg de proteína": comp["brl_kg_cp"].map(brl)}),
                  hide_index=True, width="stretch")
-    st.markdown(f'<p class="dica">Fontes: {"; ".join(FE["source"].unique())}.</p>', unsafe_allow_html=True)
 
     st.subheader("Cenários de preço da semente")
     st.markdown(f'<p class="dica">2.000 simulações sorteando as variações mensais reais do preço de '
@@ -438,13 +436,13 @@ with abas[4]:
                     f'<b>{num(perda_c, 0)}%</b>. {dica} (Os dados não têm umidade do ar.)</p>', unsafe_allow_html=True)
     if oni:
         fase = "El Niño" if oni[1] >= 0.5 else "La Niña" if oni[1] <= -0.5 else "neutro"
-        st.markdown(f'<p class="dica">Oceano Pacífico (índice ONI da NOAA) em {oni[0]}: <b>{num(oni[1])}</b> — {fase}. '
+        st.markdown(f'<p class="dica">Oceano Pacífico (índice ONI) em {oni[0]}: <b>{num(oni[1])}</b> — {fase}. '
                     "Fases fortes mexem com chuva, safra e preço dos grãos.</p>", unsafe_allow_html=True)
     al = F.weather_alerts(polo)
     if not al.empty:
         st.markdown("**Alertas de clima recentes para a região**")
         for _, r in al.iterrows():
-            st.markdown(f"- {r['data']} · [{r['titulo']}]({r['url']}) — {r['fonte']}")
+            st.markdown(f"- {r['data']} · [{r['titulo']}]({r['url']}) ")
 
     st.subheader("Notícias recentes (últimos 2 dias)")
     if nt.empty:
@@ -454,7 +452,7 @@ with abas[4]:
                     "logistica": "🚚 logística", "mercado": "📈 mercado"}
         for _, r in nt.head(15).iterrows():
             st.markdown(f"- {r['date']} · {TIPO_TXT.get(r['type'], r['type'])}{' · ⬆️ alta' if r['up'] else ''} · "
-                        f"[{r['title']}]({r['url']}) — {r['source']}")
+                        f"[{r['title']}]({r['url']})")
         st.markdown(f'<p class="dica">{n_risco} notícias de risco (clima, mercado externo, logística ou alta de preço) '
                     "entram na nota.</p>", unsafe_allow_html=True)
 
@@ -515,9 +513,7 @@ with abas[5]:
                                ("Chance de prejuízo", f"{num(mc['loss_pct'], 0)}%")]),
         ("Riscos", [("Nota geral (0 a 100)", num(risco, 0))] + [(NOMES_RISCO[k], num(x, 0)) for k, x in partes.items()]
          + [("Melhores meses para comprar semente", ", ".join(MESES[m - 1] for m in melhores))]),
-        ("Fontes e avisos", [("Preço da semente", f"{fonte_sem} ({ref_sem})"), ("Rendimento e nutrição", g["source"]),
-                             ("Animal", an["source"]),
-                             ("Aviso", "Estimativa para estudo. Confirme orçamentos e ajuste a dieta com um nutricionista.")]),
+        ("Avisos", [("Aviso", "Estimativa para estudo. Confirme orçamentos e ajuste a dieta com um nutricionista.")]),
     ]
     st.download_button("📄 Baixar relatório (PDF)", F.pdf_report(f"Viabilidade de forragem hidropônica: {nome}", secoes),
                        file_name=f"forragem_{grao.lower()}_{animal.lower()}.pdf", mime="application/pdf")

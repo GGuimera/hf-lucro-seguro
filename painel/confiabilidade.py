@@ -79,8 +79,8 @@ df, mensal, cult, pl, custos, perdas = M.carregar()
 st.title("✅ Dá para confiar?")
 st.markdown(
     "Esta página existe para **provar** — ou não — que o sistema funciona. Aqui você vê: **(1)** se o modelo teria "
-    "acertado nos anos passados, **(2)** quanto o produtor recebe de fato a menos que a Ceasa, **(3)** de onde vem cada "
-    "número e **(4)** o que já foi conferido nos dados. Sem esconder os pontos fracos."
+    "acertado nos anos passados, **(2)** quanto o produtor recebe de fato a menos que a Ceasa e **(3)** o que já foi "
+    "conferido nos dados. Sem esconder os pontos fracos."
 )
 
 # ---------- 1. Prova no passado ----------
@@ -153,8 +153,8 @@ if not pp.empty and len(comum) == 0:
     st.info("Não há meses em comum entre o preço ao produtor do alho em MG e a CeasaMinas BH para comparar.")
 elif not pp.empty:
     st.markdown(
-        '<p class="dica">Comparação oficial da Conab para o <b>alho em Minas Gerais</b>: preço que o <b>produtor recebeu</b> '
-        "× preço na <b>CeasaMinas BH</b>, mês a mês. É o caso em que as duas fontes são comparáveis (mesmo produto e região).</p>",
+        '<p class="dica">Comparação de preço para o <b>alho em Minas Gerais</b>: preço que o <b>produtor recebeu</b> '
+        "× preço na <b>CeasaMinas BH</b>, mês a mês. É o caso em que as duas séries são comparáveis (mesmo produto e região).</p>",
         unsafe_allow_html=True,
     )
     d1, d2, d3 = st.columns(3)
@@ -176,51 +176,17 @@ elif not pp.empty:
                 "sistema vai até dez/2025; por isso, no alho, a realidade de 2026 tende a ser <b>pior</b> do que a análise mostra.</div>",
                 unsafe_allow_html=True)
 
-# ---------- 3. Fontes ----------
-st.subheader("3. De onde vem cada número")
-with sqlite3.connect(M.BANCO) as con:
-    def periodo(sql):
-        try:
-            a, b = con.execute(sql).fetchone()
-            return f"{a} a {b}" if a else "—"
-        except sqlite3.OperationalError:
-            return "—"
-    fontes = pd.DataFrame([
-        {"Fonte": "Conab / Prohort — preços diários das Ceasas", "O que usamos": "preço mais comum do dia, 43 Ceasas, 48 produtos",
-         "Período no sistema": periodo("SELECT min(data), max(data) FROM precos"),
-         "Situação": "⚠️ link oficial fora do ar desde out/2026; usamos a cópia do Internet Archive de 02/01/2026",
-         "Link": "gov.br/conab → Hortigranjeiros (Prohort)"},
-        {"Fonte": "Sua planilha de séries históricas (BH)", "O que usamos": "preço médio mensal de alho, cenoura e cebola",
-         "Período no sistema": periodo("SELECT min(mes), max(mes) FROM planilha_bh"),
-         "Situação": "✅ conferida: anda junto com a CeasaMinas BH (correlação 0,98–0,99)", "Link": "arquivo do produtor"},
-        {"Fonte": "Ceagesp — boletins de cotação (São Paulo)", "O que usamos": "menor, mais comum e maior preço por tipo",
-         "Período no sistema": periodo("SELECT min(data), max(data) FROM ceagesp"),
-         "Situação": "✅ coletado direto do site oficial", "Link": "ceagesp.gov.br/cotacoes"},
-        {"Fonte": "Conab — preço recebido pelo produtor (por estado)", "O que usamos": "diferença Ceasa → produtor; preço de 2026",
-         "Período no sistema": periodo("SELECT min(mes), max(mes) FROM preco_produtor"),
-         "Situação": "✅ arquivo oficial (cópia do Internet Archive de 28/02/2026)", "Link": "portaldeinformacoes.conab.gov.br"},
-        {"Fonte": "Conab — custos de produção", "O que usamos": "custo por hectare de tomate, batata, inhame, batata-doce, quiabo, mandioca",
-         "Período no sistema": "2018 a 2023, corrigidos pela inflação", "Situação": "✅ oficial (corrigido = estimativa)",
-         "Link": "portaldeinformacoes.conab.gov.br"},
-        {"Fonte": "Custos de alho, cenoura e cebola", "O que usamos": "custo por hectare 2026",
-         "Período no sistema": "2026", "Situação": "Produtor + ANAPA (ago/2026) + CNA/Campo Futuro + Cepea + Epagri", "Link": "ver 💰 Custos"},
-        {"Fonte": "Ciclo, época de plantio e perdas", "O que usamos": "datas de plantio, colheita e perdas por cultura",
-         "Período no sistema": "—", "Situação": "⚠️ estimativas de calendários públicos — conferir com agrônomo",
-         "Link": "dados\\culturas.csv e dados\\perdas.csv"},
-    ])
-st.dataframe(fontes, hide_index=True, width="stretch")
-
-# ---------- 4. Conferências ----------
-st.subheader("4. O que já foi conferido nos dados")
+# ---------- 3. Conferências ----------
+st.subheader("3. O que já foi conferido nos dados")
 st.markdown(
     """
 - ✅ **Sem registros repetidos** (mesma Ceasa, produto e dia) e **sem preço zero ou vazio**.
 - ✅ **Unidades consistentes:** cada produto usa sempre a mesma unidade (kg, dúzia ou unidade) em todas as Ceasas.
 - ✅ **Valores fora do padrão:** só 0,02% dos preços diários; o modelo usa a **mediana** do mês, que não se deixa levar por eles.
-- ✅ **Planilha de BH:** confere com a Conab (mesmo sobe-e-desce); o nível é 8–16% diferente, mas o modelo usa só a **variação**.
+- ✅ **Planilha de BH:** confere com a série de referência (mesmo sobe-e-desce); o nível é 8–16% diferente, mas o modelo usa só a **variação**.
 - ✅ **Auditoria independente** do modelo (14 pontos analisados) — os erros encontrados foram corrigidos na versão 2.
 - ✅ **Teste justo** nas comparações: o ano testado nunca é usado para escolher os meses.
-- ⚠️ **Pouco histórico** para a maioria das culturas (Conab só de jun/2022 a dez/2025) → **confiança baixa** marcada em vermelho.
+- ⚠️ **Pouco histórico** para a maioria das culturas (só de jun/2022 a dez/2025) → **confiança baixa** marcada em vermelho.
 - ⚠️ **O modelo não prevê choques novos:** geada, seca, excesso de área plantada no país, mudança de câmbio.
 """
 )

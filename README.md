@@ -9,7 +9,7 @@ Dê 2 cliques em **`abrir_painel.bat`** (só este computador acessa) e abra **ht
 
 ## Painel na internet (Streamlit Community Cloud, grátis)
 
-- O site usa os **dados públicos** da pasta `online\` (Conab, Ceagesp, CeasaMinas) e a **planilha própria de BH** com os valores reais em R$/kg.
+- O site usa os **dados públicos** da pasta `online\` e a **planilha própria de BH** com os valores reais em R$/kg.
 - Para atualizar o site depois de coletar dados novos: 2 cliques em **`publicar.bat`**.
 - Sem banco local, o painel entra sozinho no modo online. Para testar o modo online no PC: `set PRECO_SEGURO_ONLINE=1`.
 

@@ -123,7 +123,6 @@ with aba1:
                                               for p, u in zip(tab["esperado"], tab["unidade"])],
         "Custo por kg vendido": tab["custo_kg"].map(lambda v: "—" if pd.isna(v) else brl(v)),
         "Lucro esperado / ha": tab["lucro_ha"].map(lambda v: "—" if pd.isna(v) else brl(v, 0)),
-        "Base do histórico": tab["fonte"],
     })
     st.dataframe(mostrar, hide_index=True, width="stretch", height=min(38 * (len(mostrar) + 1), 760))
     st.caption(
@@ -192,10 +191,9 @@ if len(custos):
             "Custo 2026 (R$/ha)": custos["custo_ha_2026"].map(lambda v: brl(v, 0)),
             "Subiu desde 2017": ((custos["custo_ha_2026"] / custos["custo_ha_2017"] - 1) * 100).map(
                 lambda v: "—" if pd.isna(v) else f"+{v:.0f}%"),
-            "Faixa nas fontes (R$/ha)": [f"{brl(a, 0)} a {brl(b, 0)}" for a, b in zip(custos["custo_ha_min"], custos["custo_ha_max"])],
+            "Faixa de custo (R$/ha)": [f"{brl(a, 0)} a {brl(b, 0)}" for a, b in zip(custos["custo_ha_min"], custos["custo_ha_max"])],
             "Produtividade (t/ha)": custos["produtividade_t_ha"],
             "Qualidade do número": custos["qualidade"] if "qualidade" in custos.columns else "—",
-            "Fontes": custos["fonte"],
         })
         st.dataframe(tc, hide_index=True, width="stretch")
         st.caption("Qualidade: A = fonte oficial ou do produtor, recente · B = fonte antiga corrigida pela inflação · "
@@ -204,7 +202,7 @@ if len(custos):
 
 n_baixa = int((res["conf"] == "Baixa").sum())
 st.markdown(
-    f'<div class="aviso">⚠️ <b>Versão de teste.</b> {n_baixa} de {len(res)} culturas têm <b>confiança baixa</b>: a Conab só tem '
+    f'<div class="aviso">⚠️ <b>Versão de teste.</b> {n_baixa} de {len(res)} culturas têm <b>confiança baixa</b>: a referência só tem '
     "dados de jun/2022 a dez/2025, pouco para firmar a época. Alho e cenoura usam sua planilha de BH desde 2017 e são as mais "
     "confiáveis. Ciclos, épocas de plantio, produtividade e perdas são <b>estimativas</b> — confira com um agrônomo.</div>",
     unsafe_allow_html=True,

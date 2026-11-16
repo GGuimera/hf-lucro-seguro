@@ -146,8 +146,8 @@ top3 = set(ordem.head(3)["mes"])
 st.subheader("1. Resumo")
 anos_txt = f"{mod['anos'][0]}–{mod['anos'][-1]}"
 st.markdown(
-    f'<p class="dica">Base do histórico: <b>{mod["fonte"]}</b> · cenários de {len(melhor["R"])} anos ({anos_txt}) · '
-    f"{M.texto_ciclo(linha)} · preço em R$ por {unidade} {onde}. "
+    f'<p class="dica">Cenários de {len(melhor["R"])} anos ({anos_txt}) · '
+    f"{M.texto_ciclo(linha)} · preço em R$ por {unidade}. "
     f'Confiança na época: <span class="selo" style="background:{COR_CONF[conf]}22;color:{COR_CONF[conf]}">{conf}</span></p>',
     unsafe_allow_html=True,
 )

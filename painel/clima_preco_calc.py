@@ -29,9 +29,9 @@ def pesos_polos(produto):
         return pd.Series(dtype=float), ""
     if p["participacao"].notna().any():
         w = p.dropna(subset=["participacao"]).set_index("polo")["participacao"].astype(float)
-        return w / w.sum(), f"pesos pela produção (IBGE): {w.sum():.0%} do Brasil nestes polos"
+        return w / w.sum(), f"pesos pela produção: {w.sum():.0%} do Brasil nestes polos"
     w = pd.Series(1.0, index=p["polo"])
-    return w / w.sum(), "pesos iguais nos polos conhecidos (o IBGE não mede esta cultura por município)"
+    return w / w.sum(), "pesos iguais nos polos conhecidos (não há dado de produção por município para esta cultura)"
 
 
 def clima_mensal(polos, limites):
@@ -86,7 +86,7 @@ def serie_preco(mensal, pl, produto):
         b = mensal[(mensal["produto"] == produto) & (mensal["ceasa"] == M.BRASIL)]
         if b.empty:
             return pd.Series(dtype=float), ""
-        s, onde = b.set_index("periodo")["preco"], "Média do Brasil (todas as Ceasas, Conab)"
+        s, onde = b.set_index("periodo")["preco"], "Média do Brasil (todas as Ceasas)"
     s = M._continua(s.dropna())
     return s / np.array([mod["indice"][p.month] for p in s.index]), onde
 

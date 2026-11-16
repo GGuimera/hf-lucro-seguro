@@ -16,7 +16,7 @@ def rodar():
 
 st.title("🧮 Fatores de mercado explicam o preço?")
 st.markdown(
-    "Aqui testamos se **El Niño, importação, dólar, diesel e a safra estimada pelo IBGE** antecipam o preço. "
+    "Aqui testamos se **El Niño, importação, dólar, diesel e a safra estimada** antecipam o preço. "
     "É a mesma prova da página do clima: o preço **sem o efeito da época**, comparado com a média dos 3 meses "
     "anteriores, contra cada fator — com teste contra o acaso e correção para muitos testes. "
     "As combinações foram escolhidas **antes** de olhar os resultados."
@@ -51,5 +51,4 @@ st.caption("As duas colunas de preço mostram a variação contra a média dos 3
 st.subheader("Ver uma série ao longo do tempo")
 serie = st.selectbox("Série", sorted(T.columns), index=sorted(T.columns).index("ENSO_ONI") if "ENSO_ONI" in T else 0)
 st.line_chart(T[serie].dropna().to_timestamp())
-st.caption("Fontes: NOAA (El Niño), IBGE (IPCA e LSPA — o valor de cada mês é a estimativa da safra do ano inteiro), "
-           "MDIC/Comex Stat (importação), Banco Central (dólar) e ANP (diesel). Atualize com coleta\\fatores_mercado.py.")
+st.caption("O valor de cada mês da safra é a estimativa da safra do ano inteiro.")
