@@ -6,13 +6,14 @@ Como usar (dentro da pasta do projeto):
 Agendado no Windows para rodar todo dia às 8h (tarefa "PrecoSeguro_Noticias").
 """
 import csv
+import gzip
 import re
 import time
 import unicodedata
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -20,7 +21,7 @@ from pathlib import Path
 PASTA = Path(__file__).resolve().parent.parent
 EVENTOS = PASTA / "dados" / "eventos.csv"
 LOG = PASTA / "dados" / "log_noticias.txt"
-MAX_NOVAS = 6
+MAX_NOVAS = 10
 CEAGESP_BOL = "CEAGESP - SAO PAULO (BOLETINS)"
 
 # palavra no título -> código da cultura no sistema
@@ -43,6 +44,12 @@ TIPOS = [  # (tipo, palavras) — a primeira que bater vence
 BUSCAS = [
     "alho preço", "cenoura preço", "cebola preço", "tomate preço atacado", "batata preço atacado",
     "hortaliças preço Ceasa", "hortifruti preço clima", "Ceagesp preço hortaliças", "Conab Prohort preços",
+]
+# feeds RSS diretos de sites de agro (além do Google Notícias); só título, fonte e link
+FEEDS = [
+    ("https://www.canalrural.com.br/feed/", "Canal Rural"),
+    ("https://g1.globo.com/rss/g1/economia/agronegocios/", "g1 Agronegócios"),
+    ("https://www.portaldoagronegocio.com.br/feed/", "Portal do Agronegócio"),
 ]
 
 # ----- notícias de PREVISÃO DO CLIMA (vão para dados\noticias_clima.csv, ligadas aos polos produtores) -----
@@ -104,6 +111,29 @@ def buscar(consulta):
         except Exception:
             continue
         yield {"titulo": titulo, "fonte": fonte or "Google Notícias", "url": (item.findtext("link") or "").strip(), "data": data}
+
+
+def buscar_feed(url, nome):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 PrecoSeguro-noticias/0.1"})
+    with urllib.request.urlopen(req, timeout=40) as r:
+        corpo = r.read()
+    if corpo[:2] == b"\x1f\x8b":  # alguns sites mandam o feed compactado mesmo sem pedir
+        corpo = gzip.decompress(corpo)
+    raiz = ET.fromstring(corpo)
+    limite = datetime.now(timezone.utc) - timedelta(days=2)  # mesma janela do Google (when:2d)
+    for item in raiz.iter("item"):
+        link = (item.findtext("link") or "").strip()
+        try:
+            data = parsedate_to_datetime(item.findtext("pubDate"))
+        except Exception:
+            continue
+        if not link.startswith("http") or data.replace(tzinfo=data.tzinfo or timezone.utc) < limite:
+            continue
+        titulo = " ".join((item.findtext("title") or "").split())
+        midia, anexo = item.find("{http://search.yahoo.com/mrss/}content"), item.find("enclosure")
+        imagem = (midia.get("url") if midia is not None else "") or \
+                 (anexo.get("url") if anexo is not None and anexo.get("type", "").startswith("image") else "")
+        yield {"titulo": titulo, "fonte": nome, "url": link, "data": data, "imagem": imagem or ""}
 
 
 def classificar(titulo):
@@ -191,11 +221,13 @@ def main():
     titulos = [sem_acento(e["titulo"]) for e in existentes]
     prox_id = max([int(e["id"]) for e in existentes] or [0]) + 1
     novas, vistas = [], 0
-    for consulta in BUSCAS:
+    fontes = [(n, lambda u=u, n=n: buscar_feed(u, n)) for u, n in FEEDS] + \
+             [(c, lambda c=c: buscar(c)) for c in BUSCAS]  # feeds primeiro: o limite MAX_NOVAS não os deixa de fora
+    for rotulo, gerar in fontes:
         try:
-            itens = list(buscar(consulta))
+            itens = list(gerar())
         except Exception as e:
-            registrar(f"ERRO na busca '{consulta}': {e}")
+            registrar(f"ERRO na busca '{rotulo}': {e}")
             continue
         for it in itens:
             vistas += 1
@@ -211,7 +243,7 @@ def main():
                 "id": str(prox_id), "mes": f"{it['data']:%Y-%m}", "titulo": it["titulo"][:110],
                 "resumo": "Notícia encontrada automaticamente e ainda não conferida. Abra a fonte para ler o texto completo.",
                 "tipo": tipo, "produtos": "|".join(produtos), "ceasa_medida": CEAGESP_BOL,
-                "fonte": it["fonte"], "url": it["url"], "conferida": "nao",
+                "fonte": it["fonte"], "url": it["url"], "conferida": "nao", "imagem": it.get("imagem", ""),
             })
             prox_id += 1
             urls.add(it["url"])
