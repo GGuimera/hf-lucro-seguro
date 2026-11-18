@@ -13,6 +13,7 @@ import membros
 import pagina_inicial
 
 st.set_page_config(page_title="Preço Seguro", page_icon="🌱", layout="wide")
+st.logo(str(Path(__file__).resolve().parent / "logo.svg"))
 
 CATEGORIAS = {  # mais simples primeiro, dentro de cada categoria
     "Consulta de preços": [("app.py", "Preços", "📊"), ("agro.py", "Commodities: grãos, café, boi, adubo", "🚜"),
