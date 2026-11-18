@@ -30,6 +30,7 @@ st.markdown(
       .quadro {position:relative; aspect-ratio:1/1; border-radius:6px; overflow:hidden; display:block;
                text-decoration:none !important; color:#fff !important; transition:transform .15s, filter .15s;}
       .quadro:hover {transform:scale(1.02); filter:brightness(1.12);}
+      .quadro .capa {position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.6;}
       .quadro .icone {position:absolute; top:22%; left:0; right:0; text-align:center; font-size:3.4rem; opacity:.9;}
       .quadro .selo {position:absolute; top:10px; right:10px; background:rgba(10,10,10,.72); border-radius:999px;
                      padding:4px 10px; font-weight:700; font-size:0.95rem; letter-spacing:.01em;}
@@ -85,12 +86,7 @@ culturas = sorted({p for ps in ev["produtos"] for p in ps})
 cult_sel = f2.multiselect("Cultura", culturas, format_func=lambda p: nomes.get(p, p.title()),
                           placeholder="Todas as culturas")
 ordem = f3.selectbox("Ordenar", ["Mais recentes", "Maior efeito"])
-n_auto = int((ev["conferida"] != "sim").sum())
-ver_auto = st.toggle(f"Mostrar notícias encontradas automaticamente e ainda não conferidas ({n_auto})", value=True)
-
 mostra = ev[ev["tipo"].isin(tipos_sel)]
-if not ver_auto:
-    mostra = mostra[mostra["conferida"] == "sim"]
 if cult_sel:
     mostra = mostra[mostra["produtos"].map(lambda ps: any(p in cult_sel for p in ps))]
 mostra = mostra.assign(ef=mostra["id"].map(principal["efeito"]))
@@ -108,10 +104,11 @@ for _, e in mostra.iterrows():
     else:
         selo, sub = "sem dado", rotulo
     ano, mes = e["mes"][:4], int(e["mes"][5:])
-    marca = '<div class="auto">🤖 não conferida</div>' if e["conferida"] != "sim" else ""
+    imagem = e.get("imagem") if isinstance(e.get("imagem"), str) else ""
+    capa = f'<img class="capa" src="{html.escape(imagem)}" alt="">' if imagem else ""
     quadros.append(
         f'<a class="quadro" href="{html.escape(e["url"])}" target="_blank" rel="noopener noreferrer" style="background:{fundo}">'
-        f'<div class="data">{MESES[mes - 1]}/{ano}</div><div class="selo">{selo}</div>{marca}'
+        f'{capa}<div class="data">{MESES[mes - 1]}/{ano}</div><div class="selo">{selo}</div>'
         f'<div class="icone">{icone}</div>'
         f'<div class="rodape"><div class="titulo">{html.escape(e["titulo"])}</div><div class="sub">{html.escape(sub)}</div></div></a>'
     )
@@ -124,7 +121,7 @@ opcoes = {f'{e["mes"][5:]}/{e["mes"][:4]} — {e["titulo"]}': e["id"] for _, e i
 esc = st.selectbox("Evento", list(opcoes))
 e = ev[ev["id"] == opcoes[esc]].iloc[0]
 icone, rotulo, _ = TIPOS.get(e["tipo"], ("📰", e["tipo"], ""))
-st.markdown(f"**{icone} {rotulo} · {MESES[int(e['mes'][5:]) - 1]}/{e['mes'][:4]}** — {e['resumo']}  \n"
+st.markdown(f"**{icone} {rotulo} · {MESES[int(e['mes'][5:]) - 1]}/{e['mes'][:4]}** — {e['resumo'] if e['conferida'] == 'sim' else 'Abra a notícia para ler o texto completo.'}  \n"
             f"[Ler a notícia]({e['url']})")
 cols = st.columns(len(e["produtos"]))
 for col, p in zip(cols, e["produtos"]):
@@ -134,10 +131,7 @@ for col, p in zip(cols, e["produtos"]):
         if r is None:
             st.markdown(f"**{nomes.get(p, p.title())}**: ainda sem preço desse período no sistema.")
             continue
-        vez = "fora do comum" if r["raridade"] <= 0.10 else "comum" if r["raridade"] > 0.30 else "pouco comum"
         st.metric(nomes.get(p, p.title()), f"{r['efeito']:+.0%}", help=f"Medido em: {r['onde']}")
-        st.caption(f"Uma variação desse tamanho aconteceu em {r['raridade']:.0%} dos {r['n_meses']} meses do histórico → **{vez}**. "
-                   f"Medido em: {r['onde']}.")
         s = r["serie"].dropna()
         t = pd.Period(e["mes"], freq="M")
         janela = s[(s.index >= t - 12) & (s.index <= t + 12)]
