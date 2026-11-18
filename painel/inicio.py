@@ -23,6 +23,7 @@ CATEGORIAS = {  # mais simples primeiro, dentro de cada categoria
     "Ferramentas de decisão": [("plantar.py", "O que plantar agora", "🌱"),
                                ("confiabilidade.py", "Dá para confiar? (provas)", "✅"),
                                ("analise.py", "Análise por cultura (modelo preditivo)", "🔬"),
+                               ("analises.py", "Análises avançadas", "📐"),
                                ("clima_preco.py", "O clima explica o preço? (prova)", "🧪"),
                                ("forragem.py", "Viabilidade de forragem hidropônica", "🌾")],
 }
@@ -35,7 +36,7 @@ visiveis = {arq for itens in CATEGORIAS.values() for arq, _, _ in itens
 if not acesso:  # primeira entrada na sessão: só a landing, sem menu
     pagina = st.navigation([st.Page(pagina_inicial.renderizar, title="Início", icon="🏠", default=True)], position="hidden")
 else:
-    grupos = {}
+    grupos = {"Conta": [st.Page(pagina_inicial.renderizar, title="Início", icon="🏠")]}
     for categoria, itens in CATEGORIAS.items():
         paginas = [st.Page(arq, title=t, icon=i) for arq, t, i in itens if arq in visiveis]
         if paginas:
@@ -44,5 +45,6 @@ else:
     ir_para = st.session_state.pop("ir_para", None)
     if ir_para:
         st.switch_page(ir_para)
-    st.session_state["ultima"] = f"{pagina.url_path}.py"
+    if pagina.title != "Início":
+        st.session_state["ultima"] = f"{pagina.url_path}.py"
 pagina.run()

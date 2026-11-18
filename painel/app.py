@@ -13,6 +13,7 @@ import streamlit as st
 
 import sys
 sys.path.append(str(Path(__file__).resolve().parent))
+import regiao as R
 from modelo import BANCO, BRASIL, ceagesp_diario, media_brasil  # BANCO: banco local ou, online, o montado dos dados públicos
 
 # Cores (paleta validada para fundo escuro e daltonismo) — uma cor fixa por ano
@@ -131,13 +132,16 @@ st.markdown(
 c1, c2, c3 = st.columns([1, 1, 2])
 produtos = sorted(df["produto"].unique())
 produto = c1.selectbox("Produto", produtos, index=produtos.index("TOMATE") if "TOMATE" in produtos else 0)
-uf = c2.selectbox("Estado", ["MG", "RJ", "SP", "BR"], index=2,
+UFS = ["MG", "RJ", "SP", "BR"]
+uf_regiao = R.polos().loc[R.atual(), "uf"]
+uf = c2.selectbox("Estado", UFS, index=UFS.index(uf_regiao if uf_regiao in UFS else "BR"),
                   format_func=lambda u: "Brasil (média de todas as Ceasas)" if u == "BR" else u)
 ceasas = sorted(df.loc[(df["uf"] == uf) & (df["produto"] == produto), "ceasa"].unique())
 if not ceasas:
     st.warning("Este produto não tem preços neste estado. Escolha outro produto ou estado.")
     st.stop()
-padrao = next((i for i, c in enumerate(ceasas) if "SAO PAULO" in c or "BELO HORIZONTE" in c or "RIO DE JANEIRO" in c), 0)
+padrao = next((i for i, c in enumerate(ceasas) if c == R.ceasa(R.atual())),
+              next((i for i, c in enumerate(ceasas) if "SAO PAULO" in c or "BELO HORIZONTE" in c or "RIO DE JANEIRO" in c), 0))
 ceasa = c3.selectbox("Ceasa", ceasas, index=padrao)
 
 dados = df[(df["produto"] == produto) & (df["ceasa"] == ceasa)].sort_values("data")
