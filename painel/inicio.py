@@ -1,4 +1,4 @@
-"""Entrada do painel "Preço Seguro": junta as páginas num menu.
+"""Entrada do painel "Preço Seguro": landing page, depois as páginas por categoria.
 
 Como abrir (dentro da pasta do projeto):
     .venv\\Scripts\\streamlit.exe run painel\\inicio.py
@@ -9,29 +9,29 @@ from pathlib import Path
 import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent))
-from modelo import ONLINE
 import membros
 import pagina_inicial
 
 st.set_page_config(page_title="Preço Seguro", page_icon="🌱", layout="wide")
 
-MENU = {
-    "Hortifrúti (HF)": [("app.py", "Preços", "📊"), ("plantar.py", "O que plantar agora", "🌱"),
-                        ("analise.py", "Análise por cultura (modelo preditivo)", "🔬"),
-                        ("clima.py", "Clima e alertas nos polos", "🌦️"),
-                        ("clima_preco.py", "O clima explica o preço? (prova)", "🧪"),
-                        ("fatores.py", "Fatores de mercado explicam o preço? (prova)", "🧮"),
-                        ("noticias.py", "Notícias × preços", "📰")],
-    "Agro": [("agro.py", "Commodities: grãos, café, boi, adubo", "🚜")],
-    "Forragem hidropônica": [("forragem.py", "Viabilidade de forragem hidropônica", "🌾")],
-    "Ciência": [("artigos.py", "Artigos científicos", "📚")],
-    "Confiança": [("confiabilidade.py", "Dá para confiar? (provas)", "✅")],
+CATEGORIAS = {  # mais simples primeiro, dentro de cada categoria
+    "Consulta de preços": [("app.py", "Preços", "📊"), ("agro.py", "Commodities: grãos, café, boi, adubo", "🚜"),
+                           ("artigos.py", "Artigos científicos", "📚")],
+    "Radar de commodities": [("clima.py", "Clima e alertas nos polos", "🌦️"), ("noticias.py", "Notícias × preços", "📰"),
+                             ("fatores.py", "Fatores de mercado explicam o preço? (prova)", "🧮")],
+    "Ferramentas de decisão": [("plantar.py", "O que plantar agora", "🌱"),
+                               ("confiabilidade.py", "Dá para confiar? (provas)", "✅"),
+                               ("analise.py", "Análise por cultura (modelo preditivo)", "🔬"),
+                               ("clima_preco.py", "O clima explica o preço? (prova)", "🧪"),
+                               ("forragem.py", "Viabilidade de forragem hidropônica", "🌾")],
 }
-PUBLICAS = {"app.py", "noticias.py", "clima.py", "agro.py", "artigos.py"}  # o que todo visitante vê
+PUBLICAS = {"app.py", "noticias.py", "clima.py", "agro.py", "artigos.py"}  # o que o acesso gratuito vê
+
 landing = st.Page(pagina_inicial.renderizar, title="Início", icon="🏠", default=True)
-grupos = {"Geral": [landing]}
-for grupo, itens in MENU.items():
-    visiveis = [(arq, t, i) for arq, t, i in itens if arq in PUBLICAS or membros.logado()]
-    if visiveis:
-        grupos[grupo] = [st.Page(arq, title=t, icon=i) for arq, t, i in visiveis]
+grupos = {"Início": [landing]}
+if membros.logado() or st.session_state.get("gratuito"):
+    for categoria, itens in CATEGORIAS.items():
+        visiveis = [(arq, t, i) for arq, t, i in itens if arq in PUBLICAS or membros.logado()]
+        if visiveis:
+            grupos[categoria] = [st.Page(arq, title=t, icon=i) for arq, t, i in visiveis]
 st.navigation(grupos).run()

@@ -27,12 +27,12 @@ assert any(b.label == "Entrar" for b in at.button), "a página inicial precisa d
 at.button[0].click().run()
 at.text_input[0].set_value(usuario)
 at.text_input[1].set_value(senha + "x")
-[b for b in at.button if b.label == "Entrar"][-1].click().run()
+[b for b in at.button if b.label == "Confirmar"][0].click().run()
 assert any("incorretos" in e.value for e in at.error), "senha errada precisa mostrar erro"
 
 at.text_input[0].set_value(usuario)
 at.text_input[1].set_value(senha)
-[b for b in at.button if b.label == "Entrar"][-1].click().run()
+[b for b in at.button if b.label == "Confirmar"][0].click().run()
 assert not at.exception, [e.value for e in at.exception]
 assert any("logado como membro" in s.value for s in at.success), "senha certa precisa liberar o acesso"
 
