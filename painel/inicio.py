@@ -28,11 +28,21 @@ CATEGORIAS = {  # mais simples primeiro, dentro de cada categoria
 }
 PUBLICAS = {"app.py", "noticias.py", "clima.py", "agro.py", "artigos.py"}  # o que o acesso gratuito vê
 
-landing = st.Page(pagina_inicial.renderizar, title="Início", icon="🏠", default=True)
-grupos = {"Início": [landing]}
-if membros.logado() or st.session_state.get("gratuito"):
+acesso = membros.logado() or st.session_state.get("gratuito")
+visiveis = {arq for itens in CATEGORIAS.values() for arq, _, _ in itens
+            if acesso and (arq in PUBLICAS or membros.logado())}
+
+if not acesso:  # primeira entrada na sessão: só a landing, sem menu
+    pagina = st.navigation([st.Page(pagina_inicial.renderizar, title="Início", icon="🏠", default=True)], position="hidden")
+else:
+    grupos = {}
     for categoria, itens in CATEGORIAS.items():
-        visiveis = [(arq, t, i) for arq, t, i in itens if arq in PUBLICAS or membros.logado()]
-        if visiveis:
-            grupos[categoria] = [st.Page(arq, title=t, icon=i) for arq, t, i in visiveis]
-st.navigation(grupos).run()
+        paginas = [st.Page(arq, title=t, icon=i) for arq, t, i in itens if arq in visiveis]
+        if paginas:
+            grupos[categoria] = paginas
+    pagina = st.navigation(grupos, position="top")
+    ir_para = st.session_state.pop("ir_para", None)
+    if ir_para:
+        st.switch_page(ir_para)
+    st.session_state["ultima"] = f"{pagina.url_path}.py"
+pagina.run()

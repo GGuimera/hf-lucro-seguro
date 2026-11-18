@@ -10,6 +10,7 @@ import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent))
 import modelo as M
+import regiao as R
 from modelo import MESES, MESES_LONGO, UNIDADES, brl, num, pct
 
 import estilo as ES
@@ -65,8 +66,9 @@ nomes = dict(zip(cult["nome"], cult["produto"]))
 c1, c2 = st.columns([2, 3])
 nome = c1.selectbox("Cultura", list(nomes), index=list(nomes).index("Cenoura"))
 produto = nomes[nome]
-regiao = c2.selectbox("Sua região", list(M.REGIOES))
-cal_col, ceasa_padrao = M.REGIOES[regiao]
+regiao = R.atual()
+c2.markdown(f"**Sua região:** {R.rotulo(regiao)} (troque na página inicial)")
+cal_col, ceasa_padrao = R.calendario(regiao), R.ceasa(regiao)
 c3, c4 = st.columns([3, 2])
 ceasas = sorted(df["ceasa"].unique())
 ceasa = c3.selectbox("Ceasa de referência para o preço", ceasas, index=ceasas.index(ceasa_padrao))

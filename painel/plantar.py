@@ -9,6 +9,7 @@ import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent))
 import modelo as M
+import regiao as R
 from modelo import MESES, UNIDADES, brl, pct
 
 FUNDO, TEXTO, TEXTO_2, GRADE = "#1a1a19", "#f0efec", "#c3c2b7", "#2e2e2b"
@@ -41,9 +42,10 @@ st.markdown(
 )
 
 f1, f2 = st.columns([3, 2])
-regiao = f1.selectbox("Sua região", list(M.REGIOES), index=0)
+regiao = R.atual()
+f1.markdown(f"**Sua região:** {R.rotulo(regiao)} (troque na página inicial)")
 plantio = f2.date_input("Data do plantio", value=date.today(), format="DD/MM/YYYY")
-cal_col, ceasa_padrao = M.REGIOES[regiao]
+cal_col, ceasa_padrao = R.calendario(regiao), R.ceasa(regiao)
 f3, f4 = st.columns([3, 2])
 ceasas = sorted(df["ceasa"].unique())
 ceasa = f3.selectbox("Onde você quer comparar o preço (Ceasa)", ceasas, index=ceasas.index(ceasa_padrao))

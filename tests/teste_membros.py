@@ -24,7 +24,7 @@ at = AppTest.from_file(str(PASTA / "painel" / "inicio.py"), default_timeout=300)
 assert not at.exception, [e.value for e in at.exception]
 assert any(b.label == "Entrar" for b in at.button), "a página inicial precisa do botão Entrar"
 
-at.button[0].click().run()
+[b for b in at.button if b.label == "Entrar"][0].click().run()
 at.text_input[0].set_value(usuario)
 at.text_input[1].set_value(senha + "x")
 [b for b in at.button if b.label == "Confirmar"][0].click().run()
@@ -34,6 +34,7 @@ at.text_input[0].set_value(usuario)
 at.text_input[1].set_value(senha)
 [b for b in at.button if b.label == "Confirmar"][0].click().run()
 assert not at.exception, [e.value for e in at.exception]
-assert any("logado como membro" in s.value for s in at.success), "senha certa precisa liberar o acesso"
+assert at.session_state["membro"] is True, "senha certa precisa liberar o acesso"
+assert any(t.value == "🌱 Preço Seguro" for t in at.title), "após o login deve abrir a página de Preços"
 
 print("ok: login aceita só a senha certa e a página inicial libera o sistema completo")

@@ -12,6 +12,7 @@ sys.path.append(str(Path(__file__).resolve().parent))
 import agro_calc as A
 import forragem_calc as F
 import modelo as M
+import regiao as RG
 from modelo import MESES, brl
 
 FUNDO, TEXTO, TEXTO_2, GRADE = "#1a1a19", "#f0efec", "#c3c2b7", "#2e2e2b"
@@ -104,7 +105,7 @@ dieta = c4.slider("Parte da dieta (matéria seca) em forragem", 5, lim, min(20, 
                   help=f"Máximo recomendado para {AN.loc[animal, 'name'].lower()}: {lim}% da matéria seca.")
 c1, c2, c3, c4 = st.columns(4)
 reg = F.regions()
-polo = c1.selectbox("Região (clima)", reg.index, index=list(reg.index).index("CASCAVEL"),
+polo = c1.selectbox("Região (clima)", reg.index, index=list(reg.index).index(RG.atual()),
                     format_func=lambda p: f"{reg.loc[p, 'nome']} ({reg.loc[p, 'uf']})")
 nivel = c2.radio("Nível do sistema", list(F.TIERS), format_func=F.TIERS.get, horizontal=True, index=0)
 sobra = c3.number_input("Forragem extra para vender (kg/dia)", 0.0, 10000.0, 0.0, step=10.0)

@@ -14,6 +14,7 @@ import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent))
 import modelo as M
+import regiao as R
 from modelo import MESES, num
 
 import estilo as ES
@@ -161,7 +162,7 @@ st.markdown(
 
 # ---------- Escolha do polo ----------
 rotulos = {f"{r.nome} — {r.uf}": r.polo for r in polos.itertuples()}
-esc = st.selectbox("Polo produtor", list(rotulos))
+esc = st.selectbox("Polo produtor", list(rotulos), index=list(rotulos).index(R.rotulo(R.atual())) if R.rotulo(R.atual()) in rotulos else 0)
 P = polos.set_index("polo").loc[rotulos[esc]]
 polo = rotulos[esc]
 cult_polo = pc[pc["polo"] == polo].sort_values("participacao", ascending=False, na_position="last")
